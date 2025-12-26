@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Bot, X, Sparkles, Loader2, AlertCircle, TrendingUp, Shield, Zap, Plus } from 'lucide-react';
 import { useAI } from '../../hooks/useAI';
 import { PNode } from '../../types';
@@ -23,6 +23,9 @@ export const AICommandSidebar = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { generate } = useAI();
+  
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
 
   // Load cached conversation on mount
   useEffect(() => {
@@ -44,6 +47,13 @@ export const AICommandSidebar = ({
       localStorage.setItem('xandalyze_ai_cache', JSON.stringify({ prompt, result }));
     }
   }, [prompt, result]);
+
+  // Auto-scroll to result when it arrives
+  useEffect(() => {
+    if (result && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [result]);
 
   const handleNewChat = () => {
     setPrompt('');
@@ -160,13 +170,16 @@ export const AICommandSidebar = ({
     }
   `;
 
-  const handleAnalyze = async () => {
-    if (!prompt.trim()) return;
+  const handleAnalyze = async (overridePrompt?: string) => {
+    const targetPrompt = overridePrompt || prompt;
+    if (!targetPrompt.trim()) return;
+    
+    if (overridePrompt) setPrompt(overridePrompt);
     
     setIsLoading(true);
     setError(null);
     try {
-      const response = await generate(`${systemPrompt}\n\nUser Request: ${prompt}`);
+      const response = await generate(`${systemPrompt}\n\nUser Request: ${targetPrompt}`);
       
       // Robust JSON extraction
       let jsonStr = response.text;
@@ -175,11 +188,14 @@ export const AICommandSidebar = ({
         jsonStr = jsonMatch[0];
       }
       
-      const parsed = JSON.parse(jsonStr);
+      let parsed = JSON.parse(jsonStr);
       
       // If the AI didn't follow the structure perfectly, try to adapt
-      if (!parsed.message && parsed.summary) parsed.message = parsed.summary;
-      if (!parsed.message && typeof parsed === 'string') parsed.message = parsed;
+      if (typeof parsed === 'string') {
+        parsed = { message: parsed };
+      } else if (parsed && !parsed.message && parsed.summary) {
+        parsed.message = parsed.summary;
+      }
       
       setResult(parsed);
     } catch (err: unknown) {
@@ -223,7 +239,10 @@ export const AICommandSidebar = ({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+      <div 
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar"
+      >
         {/* Offline Insights */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -267,7 +286,7 @@ export const AICommandSidebar = ({
                 </button>
               )}
               <button
-                onClick={handleAnalyze}
+                onClick={() => handleAnalyze()}
                 disabled={isLoading || !prompt.trim()}
                 className="p-3 bg-xandeum-blue hover:bg-xandeum-blue/80 disabled:opacity-50 disabled:hover:bg-xandeum-blue text-white rounded-xl transition-all shadow-lg shadow-xandeum-blue/20 active:scale-95"
               >
@@ -281,7 +300,7 @@ export const AICommandSidebar = ({
             {suggestions.map((s, i) => (
               <button
                 key={i}
-                onClick={() => setPrompt(s)}
+                onClick={() => handleAnalyze(s)}
                 className="px-3 py-1.5 bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-[10px] font-medium text-slate-400 hover:text-slate-200 rounded-full transition-all"
               >
                 {s}
@@ -298,7 +317,10 @@ export const AICommandSidebar = ({
         )}
 
         {result && (
-          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div 
+            ref={resultRef}
+            className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300"
+          >
             <div className="p-5 bg-white/[0.03] border border-white/10 rounded-2xl space-y-4">
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-xandeum-blue animate-pulse" />
@@ -318,7 +340,7 @@ export const AICommandSidebar = ({
                     {result.suggestions.map((s: string, i: number) => (
                       <button
                         key={i}
-                        onClick={() => setPrompt(s)}
+                        onClick={() => handleAnalyze(s)}
                         className="flex items-center gap-2 p-2.5 bg-xandeum-blue/5 hover:bg-xandeum-blue/10 border border-xandeum-blue/10 rounded-xl text-xs text-xandeum-blue text-left transition-all group"
                       >
                         <Sparkles size={12} className="shrink-0 group-hover:rotate-12 transition-transform" />

@@ -27,7 +27,9 @@ export const GeographicalMap = ({ nodes }: { nodes: PNode[] }) => {
   const markers = useMemo(() => {
     const counts: Record<string, number> = {};
     nodes.forEach(node => {
-      counts[node.location] = (counts[node.location] || 0) + 1;
+      if (node.location) {
+        counts[node.location] = (counts[node.location] || 0) + 1;
+      }
     });
 
     return Object.entries(LOCATION_COORDS).map(([name, coords]) => ({
@@ -71,8 +73,8 @@ export const GeographicalMap = ({ nodes }: { nodes: PNode[] }) => {
           </filter>
         </defs>
         
-        <Sphere stroke="#1e293b" strokeWidth={0.5} fill="transparent" />
-        <Graticule stroke="#1e293b" strokeWidth={0.3} />
+        <Sphere id="rsm-sphere" stroke="#1e293b" strokeWidth={0.5} fill="transparent" />
+        <Graticule id="rsm-graticule" stroke="#1e293b" strokeWidth={0.3} />
         
         <Geographies geography={geoUrl}>
           {({ geographies }) =>
