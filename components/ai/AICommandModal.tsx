@@ -4,12 +4,21 @@ import React, { useState } from 'react';
 import { Bot, X, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 import { useAI } from '../../hooks/useAI';
 
-export const AICommandModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
-  const [prompt, setPrompt] = useState('');
+export const AICommandModal = ({ isOpen, onClose, initialPrompt = '' }: { isOpen: boolean, onClose: () => void, initialPrompt?: string }) => {
+  const [prompt, setPrompt] = useState(initialPrompt);
   const [result, setResult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { generate } = useAI();
+
+  // Update prompt when initialPrompt changes or modal opens
+  React.useEffect(() => {
+    if (isOpen) {
+      setPrompt(initialPrompt);
+      setResult(null);
+      setError(null);
+    }
+  }, [isOpen, initialPrompt]);
 
   if (!isOpen) return null;
 

@@ -2,13 +2,14 @@
 
 import React, { useState, useMemo } from 'react';
 import { PNode, NodeStatus, SortConfig } from '../types';
-import { ArrowUpDown, ShieldCheck, AlertCircle, WifiOff, Search, Globe } from 'lucide-react';
+import { ArrowUpDown, ShieldCheck, AlertCircle, WifiOff, Search, Globe, Sparkles } from 'lucide-react';
 
 interface NodeTableProps {
   nodes: PNode[];
+  onAnalyzeNode?: (node: PNode) => void;
 }
 
-export const NodeTable: React.FC<NodeTableProps> = ({ nodes }) => {
+export const NodeTable: React.FC<NodeTableProps> = ({ nodes, onAnalyzeNode }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'latency', direction: 'asc' });
 
@@ -93,6 +94,7 @@ export const NodeTable: React.FC<NodeTableProps> = ({ nodes }) => {
               <th className="px-6 py-4 cursor-pointer hover:text-indigo-400 transition-colors text-right" onClick={() => handleSort('latency')}>
                  <div className="flex items-center justify-end">Latency <ArrowUpDown size={12} className="ml-2 opacity-30"/></div>
               </th>
+              <th className="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800/50">
@@ -147,11 +149,20 @@ export const NodeTable: React.FC<NodeTableProps> = ({ nodes }) => {
                     </div>
                   </div>
                 </td>
+                <td className="px-6 py-4 text-right">
+                  <button 
+                    onClick={() => onAnalyzeNode?.(node)}
+                    className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500 hover:text-white transition-all opacity-0 group-hover:opacity-100"
+                    title="AI Analysis"
+                  >
+                    <Sparkles size={14} />
+                  </button>
+                </td>
               </tr>
             ))}
             {filteredAndSortedNodes.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-20 text-center">
+                <td colSpan={6} className="px-6 py-20 text-center">
                   <div className="flex flex-col items-center justify-center">
                     <div className="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mb-4 border border-slate-700">
                       <Search size={24} className="text-slate-500 opacity-50"/>

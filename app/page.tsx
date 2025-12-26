@@ -23,6 +23,7 @@ import { StatCard } from '../components/StatCard';
 import { NodeTable } from '../components/NodeTable';
 import { StatusPieChart, LatencyChart } from '../components/DashboardCharts';
 import { NAV_ITEMS } from '../constants';
+import { AICommandModal } from '../components/ai/AICommandModal';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -30,6 +31,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCommandModalOpen, setIsCommandModalOpen] = useState(false);
+  const [aiCommandPrompt, setAiCommandPrompt] = useState('');
   
   // Gemini State
   const [aiReport, setAiReport] = useState<GeminiReport | null>(null);
@@ -57,19 +60,11 @@ export default function Home() {
     setAiError(null);
     setIsAiModalOpen(true);
     
-    // Check if API key is present in env
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.API_KEY;
-    if (!apiKey) {
-      setAiError("Gemini API Key missing. Please configure NEXT_PUBLIC_GEMINI_API_KEY to use AI features.");
-      setAiLoading(false);
-      return;
-    }
-
     try {
       const report = await generateNetworkReport(nodes);
       setAiReport(report);
-    } catch (err) {
-      setAiError("Failed to generate AI report. The service might be unavailable.");
+    } catch (err: any) {
+      setAiError(err.message || "Failed to generate AI report. The service might be unavailable.");
     } finally {
       setAiLoading(false);
     }
@@ -177,6 +172,13 @@ export default function Home() {
               Last update: {lastRefreshed ? lastRefreshed.toLocaleTimeString() : '...'}
             </span>
             <button 
+              onClick={() => setIsCommandModalOpen(true)}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-600/20 transition-all text-sm font-bold"
+            >
+              <Bot size={18} />
+              <span className="hidden md:inline">AI Command</span>
+            </button>
+            <button 
               onClick={loadData}
               disabled={loading}
               className={`p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:border-slate-600 transition-all ${loading ? 'animate-spin' : ''}`}
@@ -240,7 +242,13 @@ export default function Home() {
 
               {/* Node Table */}
               <div className="h-[600px] mb-8">
-                <NodeTable nodes={nodes} />
+                <NodeTable 
+                  nodes={nodes} 
+                  onAnalyzeNode={(node) => {
+                    setAiCommandPrompt(`Analyze this specific pNode: ${node.identityPubkey}. It has a latency of ${node.latency}ms and status ${node.status}. What can you tell me about its health?`);
+                    setIsCommandModalOpen(true);
+                  }}
+                />
               </div>
             </div>
           )}
@@ -252,7 +260,13 @@ export default function Home() {
                 <p className="text-slate-500">Detailed view of all discovered pNodes in the Xandeum network.</p>
               </div>
               <div className="h-[calc(100vh-250px)]">
-                <NodeTable nodes={nodes} />
+                <NodeTable 
+                  nodes={nodes} 
+                  onAnalyzeNode={(node) => {
+                    setAiCommandPrompt(`Analyze this specific pNode: ${node.identityPubkey}. It has a latency of ${node.latency}ms and status ${node.status}. What can you tell me about its health?`);
+                    setIsCommandModalOpen(true);
+                  }}
+                />
               </div>
             </div>
           )}
@@ -401,6 +415,15 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      <AICommandModal 
+        isOpen={isCommandModalOpen} 
+        onClose={() => {
+          setIsCommandModalOpen(false);
+          setAiCommandPrompt('');
+        }} 
+        initialPrompt={aiCommandPrompt}
+      />
     </div>
   );
 }
