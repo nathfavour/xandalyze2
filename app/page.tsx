@@ -30,7 +30,7 @@ export default function Home() {
   const [nodes, setNodes] = useState<PNode[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
-  const [isCommandSidebarOpen, setIsCommandSidebarOpen] = useState(true);
+  const [isCommandSidebarOpen, setIsCommandSidebarOpen] = useState(false);
   const [aiCommandPrompt, setAiCommandPrompt] = useState('');
   
   // Sidebar States
@@ -67,6 +67,12 @@ export default function Home() {
     loadData();
     // Refresh every 30s
     const interval = setInterval(loadData, 30000);
+    
+    // Auto-open AI sidebar only on desktop
+    if (window.innerWidth >= 1024) {
+      setIsCommandSidebarOpen(true);
+    }
+
     return () => clearInterval(interval);
   }, []);
 
