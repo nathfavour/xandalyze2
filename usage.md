@@ -1,72 +1,66 @@
-# Xandalyze - Xandeum pNode Analytics Platform
+# Xandalyze: Operator Usage Guide
 
-## Overview
-Xandalyze is a high-performance analytics dashboard designed specifically for the Xandeum network. It provides real-time monitoring of pNodes (storage provider nodes), visualizes network health, and utilizes GitHub Models (GPT-4o-mini) to generate actionable insights for network operators.
+Welcome to **Xandalyze**, the high-performance analytics platform for Xandeum pNodes. This guide will help you navigate the dashboard and leverage our AI-powered insights to optimize your storage provider infrastructure.
 
-## Features
-- **Real-time Dashboard**: Live metrics on node count, storage capacity, uptime, and latency.
-- **pNode Registry**: A searchable, sortable registry of all nodes appearing in the gossip network.
-- **Network Visualization**: Charts tracking status distribution and historical latency.
-- **AI Architect**: Integrated GPT-4o-mini model that analyzes raw network data to produce human-readable health reports and optimization recommendations.
-- **Resilience**: Automatic fallback to simulated data if the RPC endpoint is unreachable (useful for demos).
+---
 
-## Deployment
+## 1. Dashboard Overview
 
-### Prerequisites
-- Node.js (v18 or higher)
-- A GitHub Token (for AI features)
+The **Dashboard** is your mission control. It provides a high-level summary of the entire Xandeum gossip network.
 
-### Local Development
-1. **Clone the repository** to your local machine.
-2. **Install dependencies**:
-   ```bash
-   pnpm install
-   ```
-3. **Configure Environment**:
-   Ensure your environment has access to the `GITHUB_TOKEN` variable for AI features.
-4. **Start the development server**:
-   ```bash
-   pnpm run dev
-   ```
-   Open http://localhost:3000 (or the port shown in your terminal) to view the app.
+- **Total pNodes**: The total number of storage providers currently visible in the gossip network.
+- **Active Nodes**: Percentage of nodes that are currently voting and responsive.
+- **Storage Capacity**: The aggregate storage available across all discovered pNodes.
+- **Avg Latency**: The network-wide average response time.
 
-### Production Deployment
-This application is a Next.js application.
+### Visualizations
+- **Network Latency (24h)**: Tracks the stability of the network over time. Spikes here may indicate regional network congestion.
+- **Status Distribution**: A breakdown of node health (Active, Delinquent, Offline).
 
-1. **Build the application**:
-   ```bash
-   pnpm run build
-   ```
-2. **Deploy**:
-   Deploy to Vercel or any Node.js hosting provider.
+---
 
-**Note on Security**: The application uses a Next.js API route to proxy calls to GitHub Models, keeping your API key secure on the server.
+## 2. pNode Explorer
 
-## Usage Guide
+The **pNode Explorer** (accessible via the server icon in the sidebar) provides a granular view of every node in the network.
 
-### Navigation
-Use the sidebar to navigate between views:
-- **Dashboard**: High-level overview and charts.
-- **pNodes**: Detailed list of individual nodes.
-- **AI Insights**: Generate on-demand reports.
+- **Search**: Use the search bar to find specific nodes by their **Identity Pubkey**, version, or location.
+- **Sorting**: Click on any column header (e.g., Latency, Uptime) to sort the network by that metric.
+- **AI Analysis**: Click the ✨ icon on any row to send that specific node's data to **Xandalyze AI** for a detailed health check.
 
-### Interpreting Data
-- **Status**:
-  - `Active`: Node is responsive and voting.
-  - `Delinquent`: Node is visible but falling behind or missing votes.
-  - `Offline`: Node has dropped out of gossip.
-- **Latency**: Measured in milliseconds. Lower is better. Green (<50ms), Yellow (<150ms), Red (>150ms).
+---
 
-### Using AI Insights
-1. Click the **AI Insights** button in the sidebar.
-2. The system will aggregate current metrics (version distribution, average latency, node statuses).
-3. This data is sent to the **GPT-4o-mini** model via GitHub Models.
-4. Review the generated **Health Score** and **Recommendations** to improve network performance.
+## 3. Xandalyze AI
 
-## Troubleshooting
+**Xandalyze AI** is your intelligent network architect, powered by GitHub Models (\`gpt-4o-mini\`). It lives in the resizable right sidebar.
 
-### Why am I seeing mock data?
-The application is configured to connect to the Xandeum devnet RPC. If this endpoint is offline, rate-limited, or blocked by CORS during your session, the app automatically falls back to a realistic simulation mode to ensure the UI remains functional for demonstration.
+### Dynamic Insights
+The top of the AI sidebar features **Dynamic Insights**. These are calculated instantly from live network data:
+- **Network Alerts**: Immediate notification if nodes drop offline.
+- **Performance Vectors**: Real-time assessment of latency health.
+- **Capacity Tracking**: Monitoring of total network storage growth.
 
-### AI Report fails to generate
-Ensure that the `GITHUB_TOKEN` is correctly set in your environment variables.
+### AI Commands
+You can interact with the AI using natural language. Try these suggestions:
+- *"Analyze the health of the network"*
+- *"Which nodes have the highest latency?"*
+- *"Summarize the storage capacity of the current epoch"*
+
+---
+
+## 4. Data Management
+
+### Exporting Data
+To perform external analysis or keep historical records, use the **Export JSON** button in the top header. This will download a timestamped JSON file containing the full state of all discovered pNodes.
+
+### Refreshing Data
+The dashboard automatically refreshes every 30 seconds. You can trigger a manual refresh at any time using the 🔄 button in the header.
+
+---
+
+## 5. Troubleshooting
+
+### "Mock Data" Warning
+If Xandalyze cannot reach the Xandeum pRPC endpoint (due to network issues or rate limiting), it will automatically switch to **Simulation Mode**. This ensures you can still explore the UI and AI features using realistic synthetic data.
+
+### AI Sidebar is Empty
+Ensure your \`GITHUB_TOKEN\` is correctly configured in your environment. If the AI fails to respond, check the "Dynamic Insights" section for local data analysis.

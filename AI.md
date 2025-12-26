@@ -1,13 +1,13 @@
 # Modular AI Integration Guide (GitHub Models)
 
-This document outlines the modular integration of GitHub Models as implemented in **Xandalyze**. This architecture is designed for high portability, security, and flexibility across any Next.js application.
+This document outlines the modular integration of GitHub Models as implemented in **Xandalyze AI**. This architecture is designed for high portability, security, and flexibility across any Next.js application.
 
 ## 1. Core Architecture Overview
 
 The integration follows a three-tier modular pattern:
 1.  **Backend (API Route)**: Securely handles API keys and communicates with GitHub Models Inference API.
-2.  **Service Layer (Custom Hook)**: Abstracts the fetch logic and handles client-side settings (like user-provided GitHub tokens).
-3.  **UI Layer (Intent-based Components)**: Uses the service layer to perform specific tasks via prompt engineering.
+2.  **Service Layer (Custom Hook)**: Abstracts the fetch logic and handles client-side settings.
+3.  **UI Layer (Intent-based Sidebar)**: Uses the service layer to perform specific tasks via prompt engineering in a resizable sidebar.
 
 ---
 
@@ -36,16 +36,7 @@ export async function POST(req: Request) {
     const messages = [
       { role: "system", content: "You are Xandalyze AI, a specialized assistant for the Xandeum network. You analyze pNode gossip data and provide technical insights." },
     ];
-
-    if (history && history.length > 0) {
-      history.forEach((h: any) => {
-        messages.push({
-          role: h.role === 'model' ? 'assistant' : h.role,
-          content: typeof h.parts === 'string' ? h.parts : h.parts?.[0]?.text || ""
-        });
-      });
-    }
-
+    // ... history processing ...
     messages.push({ role: "user", content: prompt });
 
     // 3. Call GitHub Models Inference API
@@ -62,19 +53,7 @@ export async function POST(req: Request) {
         max_tokens: 4096
       })
     });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error?.message || `GitHub API Error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    
-    if (data.choices && data.choices[0]) {
-      return NextResponse.json({ text: data.choices[0].message.content });
-    } else {
-      throw new Error("Unexpected response format from GitHub Models");
-    }
+    // ... response handling ...
   } catch (error: any) {
     console.error("AI Generation Error:", error);
     return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
@@ -110,11 +89,7 @@ export const useAI = () => {
       headers,
       body: JSON.stringify({ prompt, history: contextHistory }),
     });
-
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "AI Generation failed");
-    }
+    // ... error handling ...
     return await response.json();
   };
 
@@ -125,53 +100,46 @@ export const useAI = () => {
 ---
 
 ## 4. UI Layer: Intent-based Implementation
-**File:** `components/ai/AICommandModal.tsx`
+**File:** `components/ai/AICommandSidebar.tsx`
 
-This component demonstrates how to use "System Prompting" to force the AI to return structured JSON for application logic.
+This component demonstrates how to use "System Prompting" to force the AI to return structured JSON for application logic, while also providing **Dynamic Offline Insights**.
 
-### Step A: Define the System Prompt
+### Step A: Dynamic Insights (Offline)
+The sidebar calculates instant insights from the `nodes` array without making API calls, providing immediate value.
+
+```typescript
+const insights = useMemo(() => {
+  const offlineNodes = nodes.filter(n => n.status !== 'Active');
+  const avgLat = nodes.reduce((acc, n) => acc + n.latency, 0) / nodes.length;
+  
+  return [
+    { title: 'Network Alert', desc: `${offlineNodes.length} nodes offline`, icon: <AlertCircle /> },
+    { title: 'Performance', desc: `Avg latency: ${Math.round(avgLat)}ms`, icon: <Zap /> }
+  ];
+}, [nodes]);
+```
+
+### Step B: AI Intent Extraction
 ```typescript
 const systemPrompt = `
   You are an intelligent assistant for Xandalyze.
-  Analyze the user's request and extract the intent to analyze a node or the network.
+  Analyze the user's request and extract the intent.
   
   Return ONLY a valid JSON object with this structure:
   {
-    "intent": "analyze_node" | "analyze_network" | "unknown",
-    "summary": "A short summary of what will be analyzed",
+    "intent": "analyze_network" | "optimize_nodes" | "unknown",
+    "summary": "A short summary of what will be performed",
     "data": { ... }
   }
 `;
-```
-
-### Step B: Execute and Parse
-```typescript
-const handleAnalyze = async () => {
-  setIsLoading(true);
-  try {
-    const response = await generate(`${systemPrompt}\n\nUser Request: ${prompt}`);
-    
-    // Clean Markdown formatting if AI includes it
-    const jsonStr = response.text.replace(/```json/g, '').replace(/```/g, '').trim();
-    const parsed = JSON.parse(jsonStr);
-    
-    setResult(parsed);
-  } catch (error) {
-    console.error('AI Analysis failed', error);
-  } finally {
-    setIsLoading(false);
-  }
-};
 ```
 
 ---
 
 ## 5. Replication Checklist for New Apps
 
-1.  **Environment Variables**:
-    - `GITHUB_TOKEN`: Your system-wide GitHub Personal Access Token.
-    - `GITHUB_MODEL_NAME`: (Optional) e.g., `gpt-4o-mini`.
-2.  **API Route**: Copy the route logic to `app/api/ai/generate/route.ts`.
-3.  **Hook**: Implement `useAI` to wrap the fetch call.
-4.  **Prompt Engineering**: Always include "Return ONLY a valid JSON object" in system prompts when the output needs to be processed by code.
-5.  **Error Handling**: Always wrap `JSON.parse` in a try-catch as AI outputs can occasionally be malformed.
+1.  **Environment Variables**: Set `GITHUB_TOKEN` and `GITHUB_MODEL_NAME`.
+2.  **API Route**: Implement the secure proxy in `app/api/ai/generate/route.ts`.
+3.  **Hook**: Use `useAI` to abstract the backend communication.
+4.  **Prompt Engineering**: Use structured system prompts for JSON outputs.
+5.  **Hybrid Intelligence**: Combine offline data processing (Dynamic Insights) with online LLM analysis (Xandalyze AI) for the best UX.
