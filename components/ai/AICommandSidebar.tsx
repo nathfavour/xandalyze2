@@ -34,12 +34,13 @@ export const AICommandSidebar = ({
     if (!container) return;
 
     const handleScroll = () => {
-      setShowScrollTop(container.scrollTop > 400);
+      setShowScrollTop(container.scrollTop > 100);
     };
 
     container.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check immediately
     return () => container.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [messages, isOpen]);
 
   const scrollToTop = () => {
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -450,10 +451,10 @@ export const AICommandSidebar = ({
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="absolute bottom-24 right-6 p-3 bg-slate-800/80 backdrop-blur-md border border-white/10 text-white rounded-full shadow-2xl hover:bg-slate-700 transition-all animate-in fade-in zoom-in duration-200 z-30"
+          className="absolute bottom-28 right-8 p-4 bg-xandeum-blue text-white rounded-full shadow-2xl shadow-xandeum-blue/40 hover:bg-xandeum-blue/80 transition-all animate-in fade-in zoom-in duration-300 z-[60] active:scale-90"
           title="Scroll to top"
         >
-          <ChevronUp size={20} />
+          <ChevronUp size={24} />
         </button>
       )}
     </aside>
