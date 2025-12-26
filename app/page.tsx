@@ -229,7 +229,7 @@ export default function Home() {
               className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-all text-sm font-bold"
             >
               <Database size={18} />
-              <span className="hidden md:inline">Export JSON</span>
+              <span className="hidden md:inline">Export</span>
             </button>
             <button 
               onClick={() => setIsCommandSidebarOpen(!isCommandSidebarOpen)}

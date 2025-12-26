@@ -55,7 +55,7 @@ You can interact with the AI using natural language. Try these suggestions:
 ## 4. Data Management
 
 ### Exporting Data
-To perform external analysis or keep historical records, use the **Export JSON** button in the top header. This will download a timestamped JSON file containing the full state of all discovered pNodes.
+To perform external analysis or keep historical records, use the **Export** button in the top header. This will download a timestamped JSON file containing the full state of all discovered pNodes.
 
 ### Refreshing Data
 The dashboard automatically refreshes every 30 seconds. You can trigger a manual refresh at any time using the 🔄 button in the header.

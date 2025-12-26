@@ -31,7 +31,7 @@ Built for the **Superteam Xandeum Bounty**, Xandalyze focuses on **Clarity**, **
 ### 🎨 Professional-Grade UI/UX
 - **Resizable Multi-Sidebar Layout**: A flexible workspace with a collapsible navigation menu and an adjustable AI command center.
 - **Xandeum Brand Identity**: Fully themed with official Xandeum colors and assets for a native ecosystem feel.
-- **Data Portability**: One-click JSON export for external analysis and reporting.
+- **Data Portability**: One-click data export for external analysis and reporting.
 
 ---
 
