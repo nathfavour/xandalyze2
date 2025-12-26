@@ -77,6 +77,30 @@ export const AICommandSidebar = ({
     "Identify offline pNodes"
   ];
 
+  // Helper to summarize nodes for AI context
+  const nodeSummary = useMemo(() => {
+    if (!nodes.length) return "No nodes currently connected.";
+    
+    const stats = {
+      total: nodes.length,
+      active: nodes.filter(n => n.status === 'Active').length,
+      offline: nodes.filter(n => n.status !== 'Active').length,
+      avgLatency: Math.round(nodes.reduce((acc, n) => acc + n.latency, 0) / nodes.length),
+      totalStorage: nodes.reduce((acc, n) => acc + (n.diskSpace || 0), 0),
+      topLatency: [...nodes].sort((a, b) => b.latency - a.latency).slice(0, 3).map(n => `${n.id.slice(0,8)} (${n.latency}ms)`),
+      versions: Array.from(new Set(nodes.map(n => n.version))).slice(0, 3)
+    };
+
+    return `
+      Network Stats:
+      - Total Nodes: ${stats.total} (${stats.active} Active, ${stats.offline} Offline)
+      - Avg Latency: ${stats.avgLatency}ms
+      - Total Storage: ${stats.totalStorage} TB
+      - High Latency Nodes: ${stats.topLatency.join(', ')}
+      - Node Versions: ${stats.versions.join(', ')}
+    `.trim();
+  }, [nodes]);
+
   // Update prompt when initialPrompt changes or sidebar opens
   React.useEffect(() => {
     if (isOpen) {
@@ -89,20 +113,23 @@ export const AICommandSidebar = ({
   if (!isOpen) return null;
 
   const systemPrompt = `
-    You are an intelligent assistant for Xandalyze, a Xandeum pNode monitoring platform.
-    Analyze the user's request and extract the intent.
+    You are Xandalyze AI, an expert analyst for the Xandeum pNode network.
+    Your goal is to provide intelligent, actionable insights based on real-time node data.
     
-    Current Date: ${new Date().toISOString()}
+    CURRENT NETWORK CONTEXT:
+    ${nodeSummary}
     
-    Return ONLY a valid JSON object with this structure:
+    INSTRUCTIONS:
+    1. Analyze the user's request in the context of the provided network data.
+    2. Be technical, professional, and concise.
+    3. If the user asks for an analysis, provide a clear summary and specific recommendations.
+    4. Use bullet points for lists in your message.
+    5. ALWAYS return your response as a JSON object with the following structure:
     {
-      "intent": "analyze_network" | "optimize_nodes" | "explain_metric" | "unknown",
-      "summary": "A short summary of what will be performed",
-      "data": {
-        "target": "string (e.g. latency, storage, specific node)",
-        "action": "string",
-        "parameters": {}
-      }
+      "message": "Your human-readable response/analysis here. Use markdown-style bullet points if needed.",
+      "intent": "analyze_network" | "optimize_nodes" | "explain_metric" | "general_chat",
+      "suggestions": ["A specific follow-up question or action", "Another suggestion"],
+      "data_points": { "Relevant Metric": "Value" }
     }
   `;
 
@@ -114,14 +141,23 @@ export const AICommandSidebar = ({
     try {
       const response = await generate(`${systemPrompt}\n\nUser Request: ${prompt}`);
       
-      // Clean Markdown formatting if AI includes it
-      const jsonStr = response.text.replace(/```json/g, '').replace(/```/g, '').trim();
+      // Robust JSON extraction
+      let jsonStr = response.text;
+      const jsonMatch = response.text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[0];
+      }
+      
       const parsed = JSON.parse(jsonStr);
+      
+      // If the AI didn't follow the structure perfectly, try to adapt
+      if (!parsed.message && parsed.summary) parsed.message = parsed.summary;
+      if (!parsed.message && typeof parsed === 'string') parsed.message = parsed;
       
       setResult(parsed);
     } catch (err: any) {
       console.error('AI Analysis failed', err);
-      setError(err.message || 'Failed to process request');
+      setError('I encountered an error while processing your request. Please try again with a more specific question about the network.');
     } finally {
       setIsLoading(false);
     }
@@ -229,19 +265,45 @@ export const AICommandSidebar = ({
 
         {result && (
           <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-            <div className="p-4 bg-indigo-500/5 border border-indigo-500/10 rounded-2xl">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="px-2 py-0.5 bg-indigo-500/20 text-indigo-400 text-[10px] font-bold rounded uppercase">
-                  {result.intent}
+            <div className="p-5 bg-white/[0.03] border border-white/10 rounded-2xl space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-xandeum-blue animate-pulse" />
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                  Analysis Result
                 </span>
               </div>
-              <p className="text-slate-300 font-medium text-sm">{result.summary}</p>
-            </div>
-            
-            <div className="bg-slate-950 rounded-2xl p-4 overflow-hidden border border-slate-800">
-              <pre className="text-[10px] text-indigo-300 font-mono whitespace-pre-wrap">
-                {JSON.stringify(result.data, null, 2)}
-              </pre>
+              
+              <div className="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">
+                {result.message}
+              </div>
+
+              {result.suggestions && result.suggestions.length > 0 && (
+                <div className="pt-4 border-t border-white/5 space-y-3">
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Recommended Actions</p>
+                  <div className="flex flex-col gap-2">
+                    {result.suggestions.map((s: string, i: number) => (
+                      <button
+                        key={i}
+                        onClick={() => setPrompt(s)}
+                        className="flex items-center gap-2 p-2.5 bg-xandeum-blue/5 hover:bg-xandeum-blue/10 border border-xandeum-blue/10 rounded-xl text-xs text-xandeum-blue text-left transition-all group"
+                      >
+                        <Sparkles size={12} className="shrink-0 group-hover:rotate-12 transition-transform" />
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {result.data_points && Object.keys(result.data_points).length > 0 && (
+                <div className="pt-4 border-t border-white/5">
+                  <div className="bg-[#050505] rounded-xl p-3 border border-white/5">
+                    <pre className="text-[10px] text-slate-500 font-mono overflow-x-auto">
+                      {JSON.stringify(result.data_points, null, 2)}
+                    </pre>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

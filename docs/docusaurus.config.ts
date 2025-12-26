@@ -75,7 +75,7 @@ const config: Config = {
           label: 'Documentation',
         },
         {
-          href: 'https://github.com/xandeum/xandalyze',
+          href: 'https://github.com/nathfavour/xandalyze2',
           label: 'GitHub',
           position: 'right',
         },
