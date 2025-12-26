@@ -254,7 +254,7 @@ export default function Home() {
               }`}
             >
               <Bot size={18} />
-              <span className="hidden md:inline">AI Command</span>
+              <span className="hidden md:inline">Xandalyze AI</span>
             </button>
             <button 
               onClick={loadData}

@@ -138,7 +138,7 @@ export const AICommandSidebar = ({
             <Bot size={20} className="text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white leading-none">AI Command</h3>
+            <h3 className="text-lg font-bold text-white leading-none">Xandalyze AI</h3>
             <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Real-time Assistant</p>
           </div>
         </div>
