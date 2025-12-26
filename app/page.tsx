@@ -36,7 +36,7 @@ export default function Home() {
   const [aiCommandPrompt, setAiCommandPrompt] = useState('');
   
   // Sidebar States
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [rightSidebarWidth, setRightSidebarWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
 
