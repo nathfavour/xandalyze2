@@ -14,7 +14,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/1bUjknp3fgkdQAajZjsL00T
 
 
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+   `pnpm install`
+2. Set the `GITHUB_TOKEN` in [.env.local](.env.local) to your GitHub token
 3. Run the app:
-   `npm run dev`
+   `pnpm run dev`

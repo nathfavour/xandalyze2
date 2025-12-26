@@ -1,50 +1,46 @@
 # Xandalyze - Xandeum pNode Analytics Platform
 
 ## Overview
-Xandalyze is a high-performance analytics dashboard designed specifically for the Xandeum network. It provides real-time monitoring of pNodes (storage provider nodes), visualizes network health, and utilizes Google Gemini AI to generate actionable insights for network operators.
+Xandalyze is a high-performance analytics dashboard designed specifically for the Xandeum network. It provides real-time monitoring of pNodes (storage provider nodes), visualizes network health, and utilizes GitHub Models (GPT-4o-mini) to generate actionable insights for network operators.
 
 ## Features
 - **Real-time Dashboard**: Live metrics on node count, storage capacity, uptime, and latency.
 - **pNode Registry**: A searchable, sortable registry of all nodes appearing in the gossip network.
 - **Network Visualization**: Charts tracking status distribution and historical latency.
-- **AI Architect**: Integrated Gemini 2.5 Flash model that analyzes raw network data to produce human-readable health reports and optimization recommendations.
+- **AI Architect**: Integrated GPT-4o-mini model that analyzes raw network data to produce human-readable health reports and optimization recommendations.
 - **Resilience**: Automatic fallback to simulated data if the RPC endpoint is unreachable (useful for demos).
 
 ## Deployment
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- A Google Gemini API Key (for AI features)
+- A GitHub Token (for AI features)
 
 ### Local Development
 1. **Clone the repository** to your local machine.
 2. **Install dependencies**:
    ```bash
-   npm install
+   pnpm install
    ```
 3. **Configure Environment**:
-   Ensure your environment has access to the `API_KEY` variable for Gemini features.
+   Ensure your environment has access to the `GITHUB_TOKEN` variable for AI features.
 4. **Start the development server**:
    ```bash
-   npm run dev
+   pnpm run dev
    ```
-   Open http://localhost:8080 (or the port shown in your terminal) to view the app.
+   Open http://localhost:3000 (or the port shown in your terminal) to view the app.
 
 ### Production Deployment
-This application is a static React Single Page Application (SPA).
+This application is a Next.js application.
 
 1. **Build the application**:
    ```bash
-   npm run build
+   pnpm run build
    ```
 2. **Deploy**:
-   Upload the contents of the `dist` (or `build`) directory to any static hosting provider, such as:
-   - Vercel
-   - Netlify
-   - GitHub Pages
-   - AWS S3 + CloudFront
+   Deploy to Vercel or any Node.js hosting provider.
 
-**Note on Security**: For a production environment, it is recommended to proxy calls to the Gemini API through a backend server to keep your API key secure, rather than exposing it in the frontend code.
+**Note on Security**: The application uses a Next.js API route to proxy calls to GitHub Models, keeping your API key secure on the server.
 
 ## Usage Guide
 
@@ -64,13 +60,13 @@ Use the sidebar to navigate between views:
 ### Using AI Insights
 1. Click the **AI Insights** button in the sidebar.
 2. The system will aggregate current metrics (version distribution, average latency, node statuses).
-3. This data is sent to the **Gemini 2.5 Flash** model.
+3. This data is sent to the **GPT-4o-mini** model via GitHub Models.
 4. Review the generated **Health Score** and **Recommendations** to improve network performance.
 
 ## Troubleshooting
 
 ### Why am I seeing mock data?
-The application is configured to connect to `https://rpc.xandeum.network`. If this endpoint is offline, rate-limited, or blocked by CORS during your session, the app automatically falls back to a realistic simulation mode to ensure the UI remains functional for demonstration.
+The application is configured to connect to the Xandeum devnet RPC. If this endpoint is offline, rate-limited, or blocked by CORS during your session, the app automatically falls back to a realistic simulation mode to ensure the UI remains functional for demonstration.
 
 ### AI Report fails to generate
-Ensure that the `process.env.API_KEY` is correctly set in your build environment. If running locally without a `.env` setup, the AI features may be disabled.
+Ensure that the `GITHUB_TOKEN` is correctly set in your environment variables.

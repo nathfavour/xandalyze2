@@ -306,7 +306,7 @@ export default function Home() {
                   <h3 className="text-2xl font-black text-white tracking-tight">Xandalyze AI Architect</h3>
                   <div className="flex items-center gap-2">
                     <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Gemini 2.5 Flash • Neural Analysis</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">GitHub Models • GPT-4o-mini</p>
                   </div>
                 </div>
               </div>
