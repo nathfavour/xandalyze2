@@ -216,7 +216,9 @@ export default function Home() {
             <div className="lg:hidden w-8 h-8 relative mr-3">
                <Image src="/xandeum-logo.png" alt="Xandeum" fill className="object-contain" />
             </div>
-            <h2 className="text-lg font-semibold text-white capitalize">{activeTab === 'map' ? 'Network Map' : 'Dashboard Overview'}</h2>
+            <h2 className="text-lg font-semibold text-white capitalize">
+              {activeTab === 'map' ? 'Network Map' : activeTab === 'nodes' ? 'pNode Explorer' : 'Overview'}
+            </h2>
           </div>
           <div className="flex items-center space-x-4">
             <span className="text-xs text-slate-500 font-mono hidden sm:block">
