@@ -129,8 +129,8 @@ export const AICommandSidebar = ({
 
   return (
     <aside 
-      style={{ width: `${width}px` }}
-      className="h-full bg-[#0A0A0B] border-l border-white/5 flex flex-col shadow-2xl z-20 animate-in slide-in-from-right duration-300"
+      style={{ width: typeof window !== 'undefined' && window.innerWidth < 1024 ? '100%' : `${width}px` }}
+      className="fixed inset-y-0 right-0 lg:relative h-full bg-[#0A0A0B] border-l border-white/5 flex flex-col shadow-2xl z-50 lg:z-20 animate-in slide-in-from-right duration-300"
     >
       <div className="p-6 border-b border-white/5 flex justify-between items-center bg-[#0A0A0B]/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="flex items-center gap-3">

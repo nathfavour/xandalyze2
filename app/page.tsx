@@ -12,8 +12,6 @@ import {
   RefreshCw,
   Sparkles,
   Bot,
-  Menu,
-  X,
   AlertCircle
 } from 'lucide-react';
 import { PNode, NetworkStats, AIReport } from '../types';
@@ -32,7 +30,6 @@ export default function Home() {
   const [nodes, setNodes] = useState<PNode[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCommandSidebarOpen, setIsCommandSidebarOpen] = useState(true);
   const [aiCommandPrompt, setAiCommandPrompt] = useState('');
   
@@ -138,18 +135,9 @@ export default function Home() {
 
   return (
     <div className="flex h-screen bg-slate-950 text-slate-50 overflow-hidden">
-      {/* Mobile Overlay */}
-      {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
+      {/* Sidebar (Desktop Only) */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 bg-[#0A0A0B] border-r border-white/5 flex flex-col transition-all duration-300 ease-in-out lg:relative lg:translate-x-0
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+        hidden lg:flex flex-col bg-[#0A0A0B] border-r border-white/5 transition-all duration-300 ease-in-out
         ${isSidebarCollapsed ? 'w-20' : 'w-64'}
       `}>
         <div className={`h-16 flex items-center px-6 border-b border-white/5 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
@@ -166,14 +154,6 @@ export default function Home() {
               </span>
             )}
           </button>
-          {!isSidebarCollapsed && (
-            <button 
-              className="lg:hidden text-slate-400 hover:text-white"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <X size={20} />
-            </button>
-          )}
         </div>
 
         <nav className="flex-1 py-6 px-3 space-y-2">
@@ -189,7 +169,6 @@ export default function Home() {
                    } else {
                      setActiveTab(item.id);
                    }
-                   setIsMobileMenuOpen(false);
                  }}
                  className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 group ${
                    active 
@@ -226,12 +205,9 @@ export default function Home() {
         {/* Header */}
         <header className="h-16 bg-[#0A0A0B]/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 lg:px-8 z-10">
           <div className="flex items-center">
-            <button 
-              className="lg:hidden p-2 mr-2 text-slate-400 hover:text-white"
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
-              <Menu size={24} />
-            </button>
+            <div className="lg:hidden w-8 h-8 relative mr-3">
+               <Image src="/xandeum-logo.png" alt="Xandeum" fill className="object-contain" />
+            </div>
             <h2 className="text-lg font-semibold text-white capitalize">{activeTab === 'map' ? 'Network Map' : 'Dashboard Overview'}</h2>
           </div>
           <div className="flex items-center space-x-4">
@@ -268,7 +244,7 @@ export default function Home() {
         </header>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-4 lg:p-8 pb-24 lg:pb-8 scroll-smooth custom-scrollbar">
           
           {activeTab === 'dashboard' && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[1600px] mx-auto w-full">
@@ -369,12 +345,42 @@ export default function Home() {
             </div>
           )}
         </div>
+
+        {/* Floating Bottom Bar (Mobile Only) */}
+        <div className="lg:hidden fixed bottom-6 left-6 right-6 z-50">
+          <div className="bg-[#0A0A0B]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 flex items-center justify-around shadow-2xl shadow-black/50">
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon === 'Server' ? Server : item.icon === 'Map' ? MapIcon : item.icon === 'Sparkles' ? Sparkles : LayoutDashboard;
+              const active = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    if (item.id === 'ai') {
+                      handleGenerateReport();
+                    } else {
+                      setActiveTab(item.id);
+                    }
+                  }}
+                  className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-200 ${
+                    active 
+                      ? 'text-xandeum-blue' 
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <Icon size={20} className={active ? 'text-xandeum-blue' : 'text-slate-400'} />
+                  <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">{item.name.split(' ')[0]}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </main>
 
-      {/* Right Sidebar Resizer */}
+      {/* Right Sidebar Resizer (Desktop Only) */}
       {isCommandSidebarOpen && (
         <div 
-          className={`w-1 bg-slate-800 hover:bg-indigo-500 cursor-col-resize transition-colors z-30 ${isResizing ? 'bg-indigo-500' : ''}`}
+          className={`hidden lg:flex w-1 bg-slate-800 hover:bg-indigo-500 cursor-col-resize transition-colors z-30 ${isResizing ? 'bg-indigo-500' : ''}`}
           onMouseDown={startResizing}
         >
           <div className="h-full flex items-center justify-center">
