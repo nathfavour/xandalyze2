@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Bot, X, Sparkles, Loader2, AlertCircle, TrendingUp, Shield, Zap, Plus } from 'lucide-react';
+import { Bot, X, Sparkles, Loader2, AlertCircle, TrendingUp, Shield, Zap, Plus, ChevronUp } from 'lucide-react';
 import { useAI } from '../../hooks/useAI';
 import { PNode } from '../../types';
 
@@ -22,10 +22,28 @@ export const AICommandSidebar = ({
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string; result?: any }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const { generate } = useAI();
   
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
+
+  // Handle scroll to show/hide scroll top button
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setShowScrollTop(container.scrollTop > 400);
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Load cached conversation on mount
   useEffect(() => {
@@ -392,6 +410,17 @@ export const AICommandSidebar = ({
           )}
         </div>
       </div>
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="absolute bottom-24 right-6 p-3 bg-slate-800/80 backdrop-blur-md border border-white/10 text-white rounded-full shadow-2xl hover:bg-slate-700 transition-all animate-in fade-in zoom-in duration-200 z-30"
+          title="Scroll to top"
+        >
+          <ChevronUp size={20} />
+        </button>
+      )}
     </aside>
   );
 };
