@@ -1,14 +1,13 @@
-import { PNode } from '../types';
+import { PNode, NodeStatus } from '../types';
 import { MOCK_NODES, DEFAULT_RPC_ENDPOINT } from '../constants';
 
 // Simulator for fetching gossip nodes
 // In a real Xandeum app, this would hit the `getClusterNodes` RPC method
 export const fetchPNodes = async (endpoint: string = DEFAULT_RPC_ENDPOINT): Promise<PNode[]> => {
   try {
-    // Attempt real fetch (will likely fail in demo env without a real CORS proxy or running node)
-    // We set a short timeout to fall back quickly for the demo
+    // Attempt real fetch
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -29,11 +28,29 @@ export const fetchPNodes = async (endpoint: string = DEFAULT_RPC_ENDPOINT): Prom
     }
 
     const data = await response.json();
-    // Assuming standard Solana/Xandeum RPC response structure
-    if (data.result) {
-       // Transform RPC result to our PNode type if necessary
-       // This part depends on the exact Xandeum RPC shape, assuming similarity to Solana
-       return data.result as PNode[];
+    
+    if (data.result && Array.isArray(data.result)) {
+       // Transform RPC result to our PNode type
+       return data.result.map((node: any) => {
+         const ip = node.gossip?.split(':')[0] || '0.0.0.0';
+         
+         // Simple deterministic location based on IP for demo consistency
+         const locations = ['US-East', 'EU-Central', 'Asia-SE', 'US-West', 'EU-West', 'SA-East'];
+         const locIndex = ip.split('.').reduce((acc: number, part: string) => acc + parseInt(part), 0) % locations.length;
+
+         return {
+           identityPubkey: node.pubkey,
+           gossipAddr: node.gossip,
+           rpcAddr: node.rpc,
+           version: node.version,
+           shredVersion: node.shredVersion,
+           status: NodeStatus.ACTIVE, // If they are in gossip, they are active
+           latency: Math.floor(Math.random() * 100) + 20, // Simulated latency
+           location: locations[locIndex],
+           diskSpace: Math.floor(Math.random() * 80) + 20, // Simulated TB
+           uptime: 95 + Math.random() * 5 // Simulated %
+         };
+       });
     }
     
     throw new Error('Invalid RPC result');

@@ -2,7 +2,7 @@ import { PNode, NodeStatus } from './types';
 
 // Xandeum typically uses standard ports, but exact RPC endpoints for the hackathon might vary.
 // We provide a default, but the app handles connection failures by showing mock data.
-export const DEFAULT_RPC_ENDPOINT = process.env.NEXT_PUBLIC_RPC_URL || "https://rpc.xandeum.network"; // Placeholder
+export const DEFAULT_RPC_ENDPOINT = process.env.NEXT_PUBLIC_RPC_URL || "https://api.devnet.xandeum.com:8899";
 
 export const MOCK_NODES: PNode[] = Array.from({ length: 45 }).map((_, i) => {
   const isUp = Math.random() > 0.1;
