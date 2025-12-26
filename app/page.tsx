@@ -32,7 +32,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCommandSidebarOpen, setIsCommandSidebarOpen] = useState(false);
+  const [isCommandSidebarOpen, setIsCommandSidebarOpen] = useState(true);
   const [aiCommandPrompt, setAiCommandPrompt] = useState('');
   
   // Sidebar States
@@ -52,6 +52,17 @@ export default function Home() {
     setNodes(data);
     setLastRefreshed(new Date());
     setLoading(false);
+  };
+
+  const handleExportData = () => {
+    if (!nodes.length) return;
+    const dataStr = JSON.stringify(nodes, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const exportFileDefaultName = `xandalyze-nodes-${new Date().toISOString()}.json`;
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
   };
 
   useEffect(() => {
@@ -221,6 +232,13 @@ export default function Home() {
             <span className="text-xs text-slate-500 font-mono hidden sm:block">
               Last update: {lastRefreshed ? lastRefreshed.toLocaleTimeString() : '...'}
             </span>
+            <button 
+              onClick={handleExportData}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:border-slate-600 transition-all text-sm font-bold"
+            >
+              <Database size={18} />
+              <span className="hidden md:inline">Export JSON</span>
+            </button>
             <button 
               onClick={() => setIsCommandSidebarOpen(!isCommandSidebarOpen)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-sm font-bold ${
@@ -490,6 +508,7 @@ export default function Home() {
         }} 
         initialPrompt={aiCommandPrompt}
         width={rightSidebarWidth}
+        nodes={nodes}
       />
     </div>
   );
