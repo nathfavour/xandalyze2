@@ -1,6 +1,6 @@
-import { PNode, GeminiReport } from "../types";
+import { PNode, AIReport } from "../types";
 
-export const generateNetworkReport = async (nodes: PNode[]): Promise<GeminiReport> => {
+export const generateNetworkReport = async (nodes: PNode[]): Promise<AIReport> => {
   // Prepare data summary to save tokens
   const activeCount = nodes.filter(n => n.status === 'Active').length;
   const avgLatency = nodes.reduce((acc, curr) => acc + curr.latency, 0) / (nodes.length || 1);
@@ -34,7 +34,7 @@ export const generateNetworkReport = async (nodes: PNode[]): Promise<GeminiRepor
     const data = await response.json();
     // Clean up potential markdown formatting from AI response
     const jsonText = data.text.replace(/```json/g, '').replace(/```/g, '').trim();
-    return JSON.parse(jsonText) as GeminiReport;
+    return JSON.parse(jsonText) as AIReport;
   } catch (error) {
     console.error("AI Service Error:", error);
     throw error;

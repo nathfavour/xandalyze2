@@ -16,7 +16,7 @@ import {
   X,
   AlertCircle
 } from 'lucide-react';
-import { PNode, NetworkStats, GeminiReport } from '../types';
+import { PNode, NetworkStats, AIReport } from '../types';
 import { fetchPNodes } from '../services/pNodeService';
 import { generateNetworkReport } from '../services/aiService';
 import { StatCard } from '../components/StatCard';
@@ -34,8 +34,8 @@ export default function Home() {
   const [isCommandModalOpen, setIsCommandModalOpen] = useState(false);
   const [aiCommandPrompt, setAiCommandPrompt] = useState('');
   
-  // Gemini State
-  const [aiReport, setAiReport] = useState<GeminiReport | null>(null);
+  // AI State
+  const [aiReport, setAiReport] = useState<AIReport | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
