@@ -1,0 +1,5 @@
+{
+  "name": "Xandalyze",
+  "description": "A high-performance analytics platform for Xandeum pNodes, featuring real-time gossip monitoring, network health visualization, and AI-powered network insights.",
+  "requestFramePermissions": []
+}
