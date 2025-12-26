@@ -119,7 +119,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/xandeum/xandalyze',
+              href: 'https://github.com/nathfavour/xandalyze2',
             },
           ],
         },
