@@ -19,7 +19,7 @@ Built for the **Superteam Xandeum Bounty**, Xandalyze focuses on **Clarity**, **
 - **Health Indicators**: Color-coded status vectors (Active, Delinquent, Offline) for instant network assessment.
 
 ### 🤖 Xandalyze AI (Powered by GitHub Models)
-- **AI Architect**: Generates comprehensive network health reports using \`gpt-4o-mini\`.
+- **AI Architect**: Generates comprehensive network health reports using advanced LLMs.
 - **Dynamic Insights**: A real-time, offline-capable insight engine that identifies latency spikes and storage bottlenecks instantly.
 - **Natural Language Commands**: Ask the AI to "Analyze the highest latency nodes" or "Summarize storage capacity" for instant data synthesis.
 
@@ -34,5 +34,5 @@ Built for the **Superteam Xandeum Bounty**, Xandalyze focuses on **Clarity**, **
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **AI Backend**: GitHub Models Inference API (\`gpt-4o-mini\`)
+- **AI Backend**: GitHub Models Inference API
 - **Data Source**: Xandeum pRPC (Devnet)

@@ -35,7 +35,7 @@ The **pNode Explorer** provides a granular view of every node in the network.
 
 ## 3. Xandalyze AI
 
-**Xandalyze AI** is your intelligent network architect, powered by GitHub Models (\`gpt-4o-mini\`). It lives in the resizable right sidebar.
+**Xandalyze AI** is your intelligent network architect, powered by advanced machine learning models. It lives in the resizable right sidebar.
 
 ### Dynamic Insights
 The top of the AI sidebar features **Dynamic Insights**. These are calculated instantly from live network data:

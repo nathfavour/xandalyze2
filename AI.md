@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     // 1. Authentication & Model Selection
     const userToken = req.headers.get("x-user-github-token");
     const githubToken = userToken || process.env.GITHUB_TOKEN;
-    const modelName = process.env.GITHUB_MODEL_NAME || "gpt-4o-mini";
+    const modelName = process.env.GITHUB_MODEL_NAME || "gpt-4o-mini"; // Default model
 
     if (!githubToken) {
       return NextResponse.json({ error: "GitHub Token not configured" }, { status: 500 });

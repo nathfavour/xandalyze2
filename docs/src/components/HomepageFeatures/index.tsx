@@ -22,7 +22,7 @@ const FeatureList: FeatureItem[] = [
     title: 'AI-Powered Insights',
     description: (
       <>
-        Leverage GitHub Models (gpt-4o-mini) for deep network analysis, 
+        Leverage advanced machine learning for deep network analysis, 
         performance optimization, and natural language command processing.
       </>
     ),
