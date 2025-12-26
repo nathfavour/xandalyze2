@@ -6,7 +6,9 @@
     "dev": "next dev -H localhost",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "docs:dev": "cd docs && pnpm start",
+    "docs:build": "cd docs && pnpm build"
   },
   "dependencies": {
     "lucide-react": "^0.562.0",
