@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { Bot, X, Sparkles, Loader2, AlertCircle, TrendingUp, Shield, Zap } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Bot, X, Sparkles, Loader2, AlertCircle, TrendingUp, Shield, Zap, Plus } from 'lucide-react';
 import { useAI } from '../../hooks/useAI';
 import { PNode } from '../../types';
 
@@ -23,6 +23,34 @@ export const AICommandSidebar = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { generate } = useAI();
+
+  // Load cached conversation on mount
+  useEffect(() => {
+    const cached = localStorage.getItem('xandalyze_ai_cache');
+    if (cached && !initialPrompt) {
+      try {
+        const { prompt: p, result: r } = JSON.parse(cached);
+        setPrompt(p);
+        setResult(r);
+      } catch (e) {
+        console.error('Failed to load AI cache', e);
+      }
+    }
+  }, [initialPrompt]);
+
+  // Cache conversation whenever it changes
+  useEffect(() => {
+    if (prompt || result) {
+      localStorage.setItem('xandalyze_ai_cache', JSON.stringify({ prompt, result }));
+    }
+  }, [prompt, result]);
+
+  const handleNewChat = () => {
+    setPrompt('');
+    setResult(null);
+    setError(null);
+    localStorage.removeItem('xandalyze_ai_cache');
+  };
 
   // Offline Insights Calculation
   const insights = useMemo(() => {
@@ -179,11 +207,18 @@ export const AICommandSidebar = ({
         </div>
         <div className="flex items-center gap-2">
           <button 
-            onClick={onClose} 
-            className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg text-xs font-bold transition-all border border-white/10"
+            onClick={handleNewChat}
+            title="New Chat"
+            className="p-2 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg transition-all border border-white/10"
           >
-            <X size={14} />
-            Cancel
+            <Plus size={16} />
+          </button>
+          <button 
+            onClick={onClose} 
+            title="Close Sidebar"
+            className="p-2 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-rose-400 rounded-lg transition-all border border-white/10"
+          >
+            <X size={16} />
           </button>
         </div>
       </div>
