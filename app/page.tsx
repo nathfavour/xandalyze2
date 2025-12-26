@@ -25,6 +25,7 @@ import { StatusPieChart, LatencyChart } from '../components/DashboardCharts';
 import { NAV_ITEMS } from '../constants';
 import { AICommandSidebar } from '../components/ai/AICommandSidebar';
 import { ChevronLeft, ChevronRight, GripVertical } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -147,17 +148,17 @@ export default function Home() {
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 bg-slate-900 border-r border-slate-800 flex flex-col transition-all duration-300 ease-in-out lg:relative lg:translate-x-0
+        fixed inset-y-0 left-0 z-40 bg-[#0A0A0B] border-r border-white/5 flex flex-col transition-all duration-300 ease-in-out lg:relative lg:translate-x-0
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
         ${isSidebarCollapsed ? 'w-20' : 'w-64'}
       `}>
-        <div className={`h-16 flex items-center px-6 border-b border-slate-800 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+        <div className={`h-16 flex items-center px-6 border-b border-white/5 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-gradient-to-tr from-indigo-500 to-cyan-400 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
-               <Activity className="text-white" size={20} />
+            <div className="w-8 h-8 relative shrink-0">
+               <Image src="/xandeum-logo.png" alt="Xandeum" fill className="object-contain" />
             </div>
             {!isSidebarCollapsed && (
-              <span className="ml-3 font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 whitespace-nowrap">
+              <span className="ml-3 font-bold text-xl tracking-tight text-white whitespace-nowrap">
                 Xandalyze
               </span>
             )}
@@ -187,14 +188,14 @@ export default function Home() {
                  }}
                  className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 group ${
                    active 
-                     ? 'bg-indigo-600/10 text-indigo-400 shadow-sm border border-indigo-500/20' 
-                     : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                     ? 'bg-xandeum-blue/10 text-xandeum-blue shadow-sm border border-xandeum-blue/20' 
+                     : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
                  } ${isSidebarCollapsed ? 'justify-center' : ''}`}
                  title={isSidebarCollapsed ? item.name : ''}
                >
-                 <Icon size={20} className={active ? 'text-indigo-400' : 'text-slate-400 group-hover:text-slate-200'} />
+                 <Icon size={20} className={active ? 'text-xandeum-blue' : 'text-slate-400 group-hover:text-slate-200'} />
                  {!isSidebarCollapsed && <span className="ml-3 font-medium">{item.name}</span>}
-                 {!isSidebarCollapsed && item.id === 'ai' && <span className="ml-auto px-1.5 py-0.5 text-[10px] bg-indigo-500 text-white rounded font-bold">BETA</span>}
+                 {!isSidebarCollapsed && item.id === 'ai' && <span className="ml-auto px-1.5 py-0.5 text-[10px] bg-xandeum-blue text-white rounded font-bold">BETA</span>}
                </button>
              );
           })}
@@ -218,7 +219,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex-1 min-w-0 flex flex-col overflow-hidden relative">
         {/* Header */}
-        <header className="h-16 bg-slate-900/50 backdrop-blur-md border-b border-slate-800 flex items-center justify-between px-4 lg:px-8 z-10">
+        <header className="h-16 bg-[#0A0A0B]/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 lg:px-8 z-10">
           <div className="flex items-center">
             <button 
               className="lg:hidden p-2 mr-2 text-slate-400 hover:text-white"
@@ -234,7 +235,7 @@ export default function Home() {
             </span>
             <button 
               onClick={handleExportData}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:border-slate-600 transition-all text-sm font-bold"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-all text-sm font-bold"
             >
               <Database size={18} />
               <span className="hidden md:inline">Export JSON</span>
@@ -243,8 +244,8 @@ export default function Home() {
               onClick={() => setIsCommandSidebarOpen(!isCommandSidebarOpen)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-sm font-bold ${
                 isCommandSidebarOpen 
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
-                  : 'bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-600/20'
+                  ? 'bg-xandeum-blue text-white shadow-lg shadow-xandeum-blue/20' 
+                  : 'bg-xandeum-blue/10 border border-xandeum-blue/20 text-xandeum-blue hover:bg-xandeum-blue/20'
               }`}
             >
               <Bot size={18} />
@@ -253,11 +254,11 @@ export default function Home() {
             <button 
               onClick={loadData}
               disabled={loading}
-              className={`p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:border-slate-600 transition-all ${loading ? 'animate-spin' : ''}`}
+              className={`p-2 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-all ${loading ? 'animate-spin' : ''}`}
             >
               <RefreshCw size={18} />
             </button>
-            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 border-2 border-slate-800 shadow-lg"></div>
+            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-xandeum-blue to-xandeum-purple border-2 border-[#0A0A0B] shadow-lg"></div>
           </div>
         </header>
 

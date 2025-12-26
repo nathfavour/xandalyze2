@@ -1,13 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020617;
+  --background: #050505;
   --foreground: #f8fafc;
+  --xandeum-blue: #0052FF;
+  --xandeum-accent: #00F0FF;
+  --xandeum-purple: #7000FF;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-xandeum-blue: var(--xandeum-blue);
+  --color-xandeum-accent: var(--xandeum-accent);
+  --color-xandeum-purple: var(--xandeum-purple);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
