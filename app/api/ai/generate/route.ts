@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     // 1. Key Source Determination (Modular Security)
     // Allows users to use their own keys or fall back to the system key
     const userKey = req.headers.get("x-user-gemini-key");
-    const apiKey = userKey || process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    const apiKey = userKey || process.env.GOOGLE_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({ error: "No API Key configured" }, { status: 500 });
