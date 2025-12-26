@@ -3,46 +3,36 @@ sidebar_position: 1
 slug: /
 ---
 
-# Tutorial Intro
+# 🛡️ Xandalyze: Next-Gen Xandeum pNode Analytics
 
-Let's discover **Docusaurus in less than 5 minutes**.
+**Xandalyze** is a high-performance analytics dashboard built for the Xandeum ecosystem. It provides real-time visibility into the pNode (storage provider) gossip network, offering deep technical metrics, global health visualizations, and an integrated AI architect to help operators optimize their infrastructure.
 
-## Getting Started
+Built for the **Superteam Xandeum Bounty**, Xandalyze focuses on **Clarity**, **Innovation**, and **Real-time Accuracy**.
 
-Get started by **creating a new site**.
+---
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## ✨ Key Features
 
-### What you'll need
+### 📊 Real-Time pNode Monitoring
+- **Live Gossip Integration**: Directly connects to Xandeum pRPC (\`getClusterNodes\`) to track active storage providers.
+- **Advanced Registry**: Searchable and sortable table featuring Pubkeys, Versions, Latency, and Uptime.
+- **Health Indicators**: Color-coded status vectors (Active, Delinquent, Offline) for instant network assessment.
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+### 🤖 Xandalyze AI (Powered by GitHub Models)
+- **AI Architect**: Generates comprehensive network health reports using \`gpt-4o-mini\`.
+- **Dynamic Insights**: A real-time, offline-capable insight engine that identifies latency spikes and storage bottlenecks instantly.
+- **Natural Language Commands**: Ask the AI to "Analyze the highest latency nodes" or "Summarize storage capacity" for instant data synthesis.
 
-## Generate a new site
+### 🎨 Professional-Grade UI/UX
+- **Resizable Multi-Sidebar Layout**: A flexible workspace with a collapsible navigation menu and an adjustable AI command center.
+- **Xandeum Brand Identity**: Fully themed with official Xandeum colors and assets for a native ecosystem feel.
 
-Generate a new Docusaurus site using the **classic template**.
+---
 
-The classic template will automatically be added to your project after you run the command:
+## 🛠️ Tech Stack
 
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **AI Backend**: GitHub Models Inference API (\`gpt-4o-mini\`)
+- **Data Source**: Xandeum pRPC (Devnet)
