@@ -81,6 +81,30 @@ export const AICommandSidebar = ({
     localStorage.removeItem('xandalyze_ai_messages');
   };
 
+  const handleInsightClick = (insight: { title: string; desc: string }) => {
+    if (isLoading) return;
+    
+    const targetPrompt = `Explain this insight: ${insight.title} - ${insight.desc}`;
+    
+    // Check if this exact prompt was already asked
+    const existingIndex = messages.findIndex(m => m.role === 'user' && m.content === targetPrompt);
+    
+    if (existingIndex !== -1) {
+      // Find the assistant's response (usually the next message)
+      const responseIndex = existingIndex + 1;
+      const element = document.getElementById(`message-${responseIndex}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Add a brief highlight effect
+        element.classList.add('ring-2', 'ring-xandeum-blue/50');
+        setTimeout(() => element.classList.remove('ring-2', 'ring-xandeum-blue/50'), 2000);
+        return;
+      }
+    }
+    
+    handleAnalyze(targetPrompt);
+  };
+
   // Offline Insights Calculation
   const insights = useMemo(() => {
     if (!nodes.length) return [];
@@ -282,7 +306,7 @@ export const AICommandSidebar = ({
             {insights.map((insight, idx) => (
               <button 
                 key={idx} 
-                onClick={() => !isLoading && handleAnalyze(`Explain this insight: ${insight.title} - ${insight.desc}`)}
+                onClick={() => handleInsightClick(insight)}
                 disabled={isLoading}
                 className={`w-full text-left p-3 sm:p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-xandeum-blue/30 transition-all group relative overflow-hidden ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/[0.04]'}`}
               >
@@ -359,8 +383,9 @@ export const AICommandSidebar = ({
           {messages.map((msg, idx) => (
             <div 
               key={idx} 
+              id={`message-${idx}`}
               ref={idx === messages.length - 1 ? lastMessageRef : null}
-              className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}
+              className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300 transition-all rounded-2xl`}
             >
               {msg.role === 'user' ? (
                 <div className="max-w-[85%] p-4 bg-xandeum-blue text-white rounded-2xl rounded-tr-none text-sm shadow-lg shadow-xandeum-blue/10">
