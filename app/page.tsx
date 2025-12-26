@@ -23,7 +23,8 @@ import { StatCard } from '../components/StatCard';
 import { NodeTable } from '../components/NodeTable';
 import { StatusPieChart, LatencyChart } from '../components/DashboardCharts';
 import { NAV_ITEMS } from '../constants';
-import { AICommandModal } from '../components/ai/AICommandModal';
+import { AICommandSidebar } from '../components/ai/AICommandSidebar';
+import { ChevronLeft, ChevronRight, GripVertical } from 'lucide-react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -31,9 +32,14 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCommandModalOpen, setIsCommandModalOpen] = useState(false);
+  const [isCommandSidebarOpen, setIsCommandSidebarOpen] = useState(false);
   const [aiCommandPrompt, setAiCommandPrompt] = useState('');
   
+  // Sidebar States
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [rightSidebarWidth, setRightSidebarWidth] = useState(400);
+  const [isResizing, setIsResizing] = useState(false);
+
   // AI State
   const [aiReport, setAiReport] = useState<AIReport | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
@@ -54,6 +60,39 @@ export default function Home() {
     const interval = setInterval(loadData, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  // Resizing Logic
+  const startResizing = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  };
+
+  const stopResizing = () => {
+    setIsResizing(false);
+  };
+
+  const resize = (e: MouseEvent) => {
+    if (isResizing) {
+      const newWidth = window.innerWidth - e.clientX;
+      if (newWidth >= 300 && newWidth <= 800) {
+        setRightSidebarWidth(newWidth);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isResizing) {
+      window.addEventListener('mousemove', resize);
+      window.addEventListener('mouseup', stopResizing);
+    } else {
+      window.removeEventListener('mousemove', resize);
+      window.removeEventListener('mouseup', stopResizing);
+    }
+    return () => {
+      window.removeEventListener('mousemove', resize);
+      window.removeEventListener('mouseup', stopResizing);
+    };
+  }, [isResizing]);
 
   const handleGenerateReport = async () => {
     setAiLoading(true);
@@ -97,17 +136,20 @@ export default function Home() {
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 border-r border-slate-800 flex flex-col transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
+        fixed inset-y-0 left-0 z-40 bg-slate-900 border-r border-slate-800 flex flex-col transition-all duration-300 ease-in-out lg:relative lg:translate-x-0
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+        ${isSidebarCollapsed ? 'w-20' : 'w-64'}
       `}>
-        <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800">
+        <div className={`h-16 flex items-center px-6 border-b border-slate-800 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-gradient-to-tr from-indigo-500 to-cyan-400 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <div className="w-8 h-8 bg-gradient-to-tr from-indigo-500 to-cyan-400 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
                <Activity className="text-white" size={20} />
             </div>
-            <span className="ml-3 font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-              Xandalyze
-            </span>
+            {!isSidebarCollapsed && (
+              <span className="ml-3 font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 whitespace-nowrap">
+                Xandalyze
+              </span>
+            )}
           </div>
           <button 
             className="lg:hidden text-slate-400 hover:text-white"
@@ -136,20 +178,28 @@ export default function Home() {
                    active 
                      ? 'bg-indigo-600/10 text-indigo-400 shadow-sm border border-indigo-500/20' 
                      : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-                 }`}
+                 } ${isSidebarCollapsed ? 'justify-center' : ''}`}
+                 title={isSidebarCollapsed ? item.name : ''}
                >
                  <Icon size={20} className={active ? 'text-indigo-400' : 'text-slate-400 group-hover:text-slate-200'} />
-                 <span className="ml-3 font-medium">{item.name}</span>
-                 {item.id === 'ai' && <span className="ml-auto px-1.5 py-0.5 text-[10px] bg-indigo-500 text-white rounded font-bold">BETA</span>}
+                 {!isSidebarCollapsed && <span className="ml-3 font-medium">{item.name}</span>}
+                 {!isSidebarCollapsed && item.id === 'ai' && <span className="ml-auto px-1.5 py-0.5 text-[10px] bg-indigo-500 text-white rounded font-bold">BETA</span>}
                </button>
              );
           })}
         </nav>
 
-        <div className="p-4 border-t border-slate-800">
-          <button className="flex items-center w-full text-slate-500 hover:text-slate-300 transition-colors p-2 rounded-lg hover:bg-slate-800/50">
+        <div className="p-4 border-t border-slate-800 space-y-2">
+          <button className={`flex items-center w-full text-slate-500 hover:text-slate-300 transition-colors p-2 rounded-lg hover:bg-slate-800/50 ${isSidebarCollapsed ? 'justify-center' : ''}`}>
             <Settings size={20} />
-            <span className="ml-3 text-sm font-medium">Settings</span>
+            {!isSidebarCollapsed && <span className="ml-3 text-sm font-medium">Settings</span>}
+          </button>
+          <button 
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className={`flex items-center w-full text-slate-500 hover:text-slate-300 transition-colors p-2 rounded-lg hover:bg-slate-800/50 ${isSidebarCollapsed ? 'justify-center' : ''}`}
+          >
+            {isSidebarCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+            {!isSidebarCollapsed && <span className="ml-3 text-sm font-medium">Collapse</span>}
           </button>
         </div>
       </aside>
@@ -172,8 +222,12 @@ export default function Home() {
               Last update: {lastRefreshed ? lastRefreshed.toLocaleTimeString() : '...'}
             </span>
             <button 
-              onClick={() => setIsCommandModalOpen(true)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-600/20 transition-all text-sm font-bold"
+              onClick={() => setIsCommandSidebarOpen(!isCommandSidebarOpen)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-sm font-bold ${
+                isCommandSidebarOpen 
+                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
+                  : 'bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-600/20'
+              }`}
             >
               <Bot size={18} />
               <span className="hidden md:inline">AI Command</span>
@@ -246,7 +300,7 @@ export default function Home() {
                   nodes={nodes} 
                   onAnalyzeNode={(node) => {
                     setAiCommandPrompt(`Analyze this specific pNode: ${node.identityPubkey}. It has a latency of ${node.latency}ms and status ${node.status}. What can you tell me about its health?`);
-                    setIsCommandModalOpen(true);
+                    setIsCommandSidebarOpen(true);
                   }}
                 />
               </div>
@@ -264,7 +318,7 @@ export default function Home() {
                   nodes={nodes} 
                   onAnalyzeNode={(node) => {
                     setAiCommandPrompt(`Analyze this specific pNode: ${node.identityPubkey}. It has a latency of ${node.latency}ms and status ${node.status}. What can you tell me about its health?`);
-                    setIsCommandModalOpen(true);
+                    setIsCommandSidebarOpen(true);
                   }}
                 />
               </div>
@@ -292,6 +346,18 @@ export default function Home() {
           )}
         </div>
       </main>
+
+      {/* Right Sidebar Resizer */}
+      {isCommandSidebarOpen && (
+        <div 
+          className={`w-1 bg-slate-800 hover:bg-indigo-500 cursor-col-resize transition-colors z-30 ${isResizing ? 'bg-indigo-500' : ''}`}
+          onMouseDown={startResizing}
+        >
+          <div className="h-full flex items-center justify-center">
+            <GripVertical size={12} className="text-slate-600" />
+          </div>
+        </div>
+      )}
 
       {/* Gemini AI Modal */}
       {isAiModalOpen && (
@@ -416,13 +482,14 @@ export default function Home() {
         </div>
       )}
 
-      <AICommandModal 
-        isOpen={isCommandModalOpen} 
+      <AICommandSidebar 
+        isOpen={isCommandSidebarOpen} 
         onClose={() => {
-          setIsCommandModalOpen(false);
+          setIsCommandSidebarOpen(false);
           setAiCommandPrompt('');
         }} 
         initialPrompt={aiCommandPrompt}
+        width={rightSidebarWidth}
       />
     </div>
   );
