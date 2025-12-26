@@ -86,7 +86,7 @@ export const AICommandSidebar = ({
       offline: nodes.filter(n => n.status !== 'Active').length,
       avgLatency: Math.round(nodes.reduce((acc, n) => acc + n.latency, 0) / nodes.length),
       totalStorage: nodes.reduce((acc, n) => acc + (n.diskSpace || 0), 0),
-      topLatency: [...nodes].sort((a, b) => b.latency - a.latency).slice(0, 3).map(n => `${n.id.slice(0,8)} (${n.latency}ms)`),
+      topLatency: [...nodes].sort((a, b) => b.latency - a.latency).slice(0, 3).map(n => `${n.identityPubkey.slice(0,8)} (${n.latency}ms)`),
       versions: Array.from(new Set(nodes.map(n => n.version))).slice(0, 3)
     };
 
