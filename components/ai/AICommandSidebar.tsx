@@ -280,8 +280,13 @@ export const AICommandSidebar = ({
           </div>
           <div className="grid grid-cols-1 gap-3">
             {insights.map((insight, idx) => (
-              <div key={idx} className="p-3 sm:p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-white/10 transition-colors group">
-                <div className="flex items-start gap-3">
+              <button 
+                key={idx} 
+                onClick={() => !isLoading && handleAnalyze(`Explain this insight: ${insight.title} - ${insight.desc}`)}
+                disabled={isLoading}
+                className={`w-full text-left p-3 sm:p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-xandeum-blue/30 transition-all group relative overflow-hidden ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/[0.04]'}`}
+              >
+                <div className="flex items-start gap-3 relative z-10">
                   <div className={`p-2 rounded-lg bg-[#050505] border border-white/5 group-hover:scale-110 transition-transform shrink-0`}>
                     {insight.icon}
                   </div>
@@ -289,8 +294,11 @@ export const AICommandSidebar = ({
                     <p className="text-xs font-bold text-white mb-0.5 truncate">{insight.title}</p>
                     <p className="text-[11px] text-slate-400 leading-relaxed line-clamp-2">{insight.desc}</p>
                   </div>
+                  <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Sparkles size={12} className="text-xandeum-blue" />
+                  </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -330,8 +338,9 @@ export const AICommandSidebar = ({
             {suggestions.map((s, i) => (
               <button
                 key={i}
-                onClick={() => handleAnalyze(s)}
-                className="px-3 py-1.5 bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-[10px] font-medium text-slate-400 hover:text-slate-200 rounded-full transition-all"
+                onClick={() => !isLoading && handleAnalyze(s)}
+                disabled={isLoading}
+                className={`px-3 py-1.5 bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-[10px] font-medium text-slate-400 hover:text-slate-200 rounded-full transition-all ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {s}
               </button>
@@ -377,8 +386,9 @@ export const AICommandSidebar = ({
                         {msg.result.suggestions.map((s: string, i: number) => (
                           <button
                             key={i}
-                            onClick={() => handleAnalyze(s)}
-                            className="flex items-center gap-2 p-2.5 bg-xandeum-blue/5 hover:bg-xandeum-blue/10 border border-xandeum-blue/10 rounded-xl text-xs text-xandeum-blue text-left transition-all group"
+                            onClick={() => !isLoading && handleAnalyze(s)}
+                            disabled={isLoading}
+                            className={`flex items-center gap-2 p-2.5 bg-xandeum-blue/5 hover:bg-xandeum-blue/10 border border-xandeum-blue/10 rounded-xl text-xs text-xandeum-blue text-left transition-all group ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                           >
                             <Sparkles size={12} className="shrink-0 group-hover:rotate-12 transition-transform" />
                             {s}
