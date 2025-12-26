@@ -41,10 +41,9 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
+          routeBasePath: '/', // Serve the docs at the site's root
           editUrl:
-            'https://github.com/xandeum/xandalyze/tree/main/docs/',
+            'https://github.com/nathfavour/xandalyze2/tree/main/docs/',
         },
         blog: false,
         theme: {
@@ -90,15 +89,15 @@ const config: Config = {
           items: [
             {
               label: 'Introduction',
-              to: '/docs/intro',
+              to: '/',
             },
             {
               label: 'Usage Guide',
-              to: '/docs/usage',
+              to: '/usage',
             },
             {
               label: 'AI Architecture',
-              to: '/docs/ai',
+              to: '/ai',
             },
           ],
         },
