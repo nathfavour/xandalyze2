@@ -18,48 +18,49 @@ export const AICommandSidebar = ({
   width: number,
   nodes?: PNode[]
 }) => {
-  const [prompt, setPrompt] = useState(initialPrompt);
-  const [result, setResult] = useState<{ message: string; suggestions?: string[]; data_points?: Record<string, unknown> } | null>(null);
+  const [prompt, setPrompt] = useState('');
+  const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string; result?: any }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { generate } = useAI();
   
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const resultRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
 
   // Load cached conversation on mount
   useEffect(() => {
-    const cached = localStorage.getItem('xandalyze_ai_cache');
-    if (cached && !initialPrompt) {
+    const cached = localStorage.getItem('xandalyze_ai_messages');
+    if (cached) {
       try {
-        const { prompt: p, result: r } = JSON.parse(cached);
-        setPrompt(p);
-        setResult(r);
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed)) {
+          setMessages(parsed);
+        }
       } catch (e) {
         console.error('Failed to load AI cache', e);
       }
     }
-  }, [initialPrompt]);
+  }, []);
 
   // Cache conversation whenever it changes
   useEffect(() => {
-    if (prompt || result) {
-      localStorage.setItem('xandalyze_ai_cache', JSON.stringify({ prompt, result }));
+    if (messages.length > 0) {
+      localStorage.setItem('xandalyze_ai_messages', JSON.stringify(messages));
     }
-  }, [prompt, result]);
+  }, [messages]);
 
-  // Auto-scroll to result when it arrives
+  // Auto-scroll to bottom when messages change
   useEffect(() => {
-    if (result && resultRef.current) {
-      resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [result]);
+  }, [messages]);
 
   const handleNewChat = () => {
     setPrompt('');
-    setResult(null);
+    setMessages([]);
     setError(null);
-    localStorage.removeItem('xandalyze_ai_cache');
+    localStorage.removeItem('xandalyze_ai_messages');
   };
 
   // Offline Insights Calculation
@@ -140,10 +141,8 @@ export const AICommandSidebar = ({
 
   // Update prompt when initialPrompt changes or sidebar opens
   React.useEffect(() => {
-    if (isOpen) {
-      setPrompt(initialPrompt);
-      setResult(null);
-      setError(null);
+    if (isOpen && initialPrompt) {
+      handleAnalyze(initialPrompt);
     }
   }, [isOpen, initialPrompt]);
 
@@ -174,12 +173,21 @@ export const AICommandSidebar = ({
     const targetPrompt = overridePrompt || prompt;
     if (!targetPrompt.trim()) return;
     
-    if (overridePrompt) setPrompt(overridePrompt);
+    const newUserMessage = { role: 'user' as const, content: targetPrompt };
+    const updatedMessages = [...messages, newUserMessage];
+    setMessages(updatedMessages);
+    setPrompt('');
     
     setIsLoading(true);
     setError(null);
     try {
-      const response = await generate(`${systemPrompt}\n\nUser Request: ${targetPrompt}`);
+      // Prepare history for the API (excluding the very last message which is the current prompt)
+      const history = messages.map(m => ({
+        role: m.role === 'user' ? 'user' : 'model',
+        parts: [{ text: m.content }]
+      }));
+
+      const response = await generate(`${systemPrompt}\n\nUser Request: ${targetPrompt}`, history);
       
       // Robust JSON extraction
       let jsonStr = response.text;
@@ -197,7 +205,11 @@ export const AICommandSidebar = ({
         parsed.message = parsed.summary;
       }
       
-      setResult(parsed);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: parsed.message, 
+        result: parsed 
+      }]);
     } catch (err: unknown) {
       console.error('AI Analysis failed', err);
       setError('I encountered an error while processing your request. Please try again with a more specific question about the network.');
@@ -316,53 +328,69 @@ export const AICommandSidebar = ({
           </div>
         )}
 
-        {result && (
-          <div 
-            ref={resultRef}
-            className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300"
-          >
-            <div className="p-5 bg-white/[0.03] border border-white/10 rounded-2xl space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-xandeum-blue animate-pulse" />
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                  Analysis Result
-                </span>
-              </div>
-              
-              <div className="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">
-                {result.message}
-              </div>
-
-              {result.suggestions && result.suggestions.length > 0 && (
-                <div className="pt-4 border-t border-white/5 space-y-3">
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Recommended Actions</p>
-                  <div className="flex flex-col gap-2">
-                    {result.suggestions.map((s: string, i: number) => (
-                      <button
-                        key={i}
-                        onClick={() => handleAnalyze(s)}
-                        className="flex items-center gap-2 p-2.5 bg-xandeum-blue/5 hover:bg-xandeum-blue/10 border border-xandeum-blue/10 rounded-xl text-xs text-xandeum-blue text-left transition-all group"
-                      >
-                        <Sparkles size={12} className="shrink-0 group-hover:rotate-12 transition-transform" />
-                        {s}
-                      </button>
-                    ))}
-                  </div>
+        <div className="space-y-6">
+          {messages.map((msg, idx) => (
+            <div 
+              key={idx} 
+              ref={idx === messages.length - 1 ? lastMessageRef : null}
+              className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}
+            >
+              {msg.role === 'user' ? (
+                <div className="max-w-[85%] p-4 bg-xandeum-blue text-white rounded-2xl rounded-tr-none text-sm shadow-lg shadow-xandeum-blue/10">
+                  {msg.content}
                 </div>
-              )}
-
-              {result.data_points && Object.keys(result.data_points).length > 0 && (
-                <div className="pt-4 border-t border-white/5">
-                  <div className="bg-[#050505] rounded-xl p-3 border border-white/5">
-                    <pre className="text-[10px] text-slate-500 font-mono overflow-x-auto">
-                      {JSON.stringify(result.data_points, null, 2)}
-                    </pre>
+              ) : (
+                <div className="w-full p-5 bg-white/[0.03] border border-white/10 rounded-2xl space-y-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-xandeum-blue animate-pulse" />
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                      Analysis Result
+                    </span>
                   </div>
+                  
+                  <div className="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">
+                    {msg.content}
+                  </div>
+
+                  {msg.result?.suggestions && msg.result.suggestions.length > 0 && (
+                    <div className="pt-4 border-t border-white/5 space-y-3">
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Recommended Actions</p>
+                      <div className="flex flex-col gap-2">
+                        {msg.result.suggestions.map((s: string, i: number) => (
+                          <button
+                            key={i}
+                            onClick={() => handleAnalyze(s)}
+                            className="flex items-center gap-2 p-2.5 bg-xandeum-blue/5 hover:bg-xandeum-blue/10 border border-xandeum-blue/10 rounded-xl text-xs text-xandeum-blue text-left transition-all group"
+                          >
+                            <Sparkles size={12} className="shrink-0 group-hover:rotate-12 transition-transform" />
+                            {s}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {msg.result?.data_points && Object.keys(msg.result.data_points).length > 0 && (
+                    <div className="pt-4 border-t border-white/5">
+                      <div className="bg-[#050505] rounded-xl p-3 border border-white/5">
+                        <pre className="text-[10px] text-slate-500 font-mono overflow-x-auto">
+                          {JSON.stringify(msg.result.data_points, null, 2)}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          </div>
-        )}
+          ))}
+          
+          {isLoading && (
+            <div className="flex items-center gap-3 p-4 bg-white/[0.02] border border-white/5 rounded-2xl animate-pulse">
+              <Loader2 className="animate-spin text-xandeum-blue" size={18} />
+              <span className="text-xs text-slate-500 font-medium">AI is thinking...</span>
+            </div>
+          )}
+        </div>
       </div>
     </aside>
   );
