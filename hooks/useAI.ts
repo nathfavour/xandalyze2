@@ -5,7 +5,7 @@ import { useSettings } from './useSettings';
 export const useAI = () => {
   const { userSettings } = useSettings();
 
-  const generate = async (prompt: string, contextHistory: any[] = []) => {
+  const generate = async (prompt: string, contextHistory: { role: string; parts: string | { text: string }[] }[] = []) => {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     
     // Inject user-specific token if available in settings
@@ -23,7 +23,8 @@ export const useAI = () => {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || "AI Generation failed");
     }
-    return await response.json();
+    const data = (await response.json()) as { text: string };
+    return data;
   };
 
   return { generate };

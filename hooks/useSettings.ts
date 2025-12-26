@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface UserSettings {
   customGithubToken?: string;
@@ -8,19 +8,19 @@ interface UserSettings {
 }
 
 export const useSettings = () => {
-  const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
-
-  useEffect(() => {
-    // Load settings from localStorage on mount
-    const saved = localStorage.getItem('xandalyze_settings');
-    if (saved) {
-      try {
-        setUserSettings(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to parse settings', e);
+  const [userSettings, setUserSettings] = useState<UserSettings | null>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('xandalyze_settings');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error('Failed to parse settings', e);
+        }
       }
     }
-  }, []);
+    return null;
+  });
 
   const updateSettings = (newSettings: Partial<UserSettings>) => {
     const updated = { ...userSettings, ...newSettings };

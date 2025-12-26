@@ -22,7 +22,7 @@ import { NodeTable } from '../components/NodeTable';
 import { StatusPieChart, LatencyChart } from '../components/DashboardCharts';
 import { NAV_ITEMS } from '../constants';
 import { AICommandSidebar } from '../components/ai/AICommandSidebar';
-import { ChevronLeft, ChevronRight, GripVertical } from 'lucide-react';
+import { ChevronLeft, ChevronRight, GripVertical, X } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Home() {
@@ -117,8 +117,9 @@ export default function Home() {
     try {
       const report = await generateNetworkReport(nodes);
       setAiReport(report);
-    } catch (err: any) {
-      setAiError(err.message || "Failed to generate AI report. The service might be unavailable.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to generate AI report. The service might be unavailable.";
+      setAiError(message);
     } finally {
       setAiLoading(false);
     }
@@ -479,7 +480,7 @@ export default function Home() {
                       <h4 className="font-black text-xs uppercase tracking-[0.2em]">Executive Summary</h4>
                     </div>
                     <div className="text-slate-300 leading-relaxed bg-indigo-500/[0.03] p-6 rounded-3xl border border-indigo-500/10 text-lg font-medium italic">
-                      "{aiReport.summary}"
+                      &quot;{aiReport.summary}&quot;
                     </div>
                   </div>
 

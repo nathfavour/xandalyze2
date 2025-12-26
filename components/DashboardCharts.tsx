@@ -67,10 +67,15 @@ export const StatusPieChart: React.FC<ChartProps> = ({ nodes }) => {
 
 export const LatencyChart: React.FC<ChartProps> = ({ nodes }) => {
   // Simulate historical data based on current nodes
-  const data = Array.from({ length: 24 }).map((_, i) => ({
-    time: `${i}:00`,
-    latency: Math.floor(nodes.reduce((acc, n) => acc + (n.latency || 0), 0) / (nodes.length || 1) + Math.random() * 20 - 10)
-  }));
+  const data = React.useMemo(() => {
+    // Use a deterministic seed based on node count or first node ID if possible
+    // For now, we'll just use a fixed offset to satisfy the purity rule
+    const baseLatency = nodes.reduce((acc, n) => acc + (n.latency || 0), 0) / (nodes.length || 1);
+    return Array.from({ length: 24 }).map((_, i) => ({
+      time: `${i}:00`,
+      latency: Math.floor(baseLatency + (Math.sin(i) * 10))
+    }));
+  }, [nodes]);
 
   return (
     <div className="h-[350px] w-full bg-[#0A0A0B]/40 backdrop-blur-xl rounded-2xl border border-white/5 p-6 shadow-xl">

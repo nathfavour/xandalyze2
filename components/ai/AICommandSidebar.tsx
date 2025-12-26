@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Bot, X, Sparkles, Loader2, AlertCircle, TrendingUp, Shield, Zap, Info } from 'lucide-react';
+import { Bot, X, Sparkles, Loader2, AlertCircle, TrendingUp, Shield, Zap } from 'lucide-react';
 import { useAI } from '../../hooks/useAI';
 import { PNode } from '../../types';
 
@@ -19,7 +19,7 @@ export const AICommandSidebar = ({
   nodes?: PNode[]
 }) => {
   const [prompt, setPrompt] = useState(initialPrompt);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{ message: string; suggestions?: string[]; data_points?: Record<string, unknown> } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { generate } = useAI();
@@ -28,7 +28,6 @@ export const AICommandSidebar = ({
   const insights = useMemo(() => {
     if (!nodes.length) return [];
     
-    const activeNodes = nodes.filter(n => n.status === 'Active');
     const offlineNodes = nodes.filter(n => n.status !== 'Active');
     const avgLat = nodes.reduce((acc, n) => acc + n.latency, 0) / nodes.length;
     const totalStorage = nodes.reduce((acc, n) => acc + (n.diskSpace || 0), 0);
@@ -155,7 +154,7 @@ export const AICommandSidebar = ({
       if (!parsed.message && typeof parsed === 'string') parsed.message = parsed;
       
       setResult(parsed);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('AI Analysis failed', err);
       setError('I encountered an error while processing your request. Please try again with a more specific question about the network.');
     } finally {

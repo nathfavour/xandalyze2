@@ -31,7 +31,7 @@ export const fetchPNodes = async (endpoint: string = DEFAULT_RPC_ENDPOINT): Prom
     
     if (data.result && Array.isArray(data.result)) {
        // Transform RPC result to our PNode type
-       return data.result.map((node: any) => {
+       return data.result.map((node: { pubkey: string; gossip: string; rpc: string | null; version: string | null; shredVersion: number | null }) => {
          const ip = node.gossip?.split(':')[0] || '0.0.0.0';
          
          // Simple deterministic location based on IP for demo consistency
@@ -42,8 +42,8 @@ export const fetchPNodes = async (endpoint: string = DEFAULT_RPC_ENDPOINT): Prom
            identityPubkey: node.pubkey,
            gossipAddr: node.gossip,
            rpcAddr: node.rpc,
-           version: node.version,
-           shredVersion: node.shredVersion,
+           version: node.version || 'Unknown',
+           shredVersion: node.shredVersion || 0,
            status: NodeStatus.ACTIVE, // If they are in gossip, they are active
            latency: Math.floor(Math.random() * 100) + 20, // Simulated latency
            location: locations[locIndex],

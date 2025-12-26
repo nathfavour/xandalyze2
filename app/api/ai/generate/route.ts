@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       // Convert history to GitHub Models format if necessary
       // Assuming history is an array of { role, parts: [{ text }] } from Gemini format
       // We'll map it to { role, content }
-      history.forEach((h: any) => {
+      history.forEach((h: { role: string; parts: string | { text: string }[] }) => {
         messages.push({
           role: h.role === 'model' ? 'assistant' : h.role,
           content: typeof h.parts === 'string' ? h.parts : h.parts?.[0]?.text || ""
@@ -60,8 +60,9 @@ export async function POST(req: Request) {
       throw new Error("Unexpected response format from GitHub Models");
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal Server Error";
     console.error("AI Generation Error:", error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
