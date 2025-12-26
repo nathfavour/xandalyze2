@@ -158,18 +158,18 @@ export const AICommandSidebar = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Dynamic Insights</h4>
-            <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-500 text-[8px] font-bold rounded-full border border-emerald-500/20">OFFLINE MODE</span>
+            <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-500 text-[8px] font-bold rounded-full border border-emerald-500/20 shrink-0">OFFLINE MODE</span>
           </div>
           <div className="grid grid-cols-1 gap-3">
             {insights.map((insight, idx) => (
-              <div key={idx} className="p-4 bg-slate-800/40 border border-slate-800 rounded-2xl hover:border-slate-700 transition-colors group">
+              <div key={idx} className="p-3 sm:p-4 bg-slate-800/40 border border-slate-800 rounded-2xl hover:border-slate-700 transition-colors group">
                 <div className="flex items-start gap-3">
-                  <div className={`p-2 rounded-lg bg-slate-900 border border-slate-800 group-hover:scale-110 transition-transform`}>
+                  <div className={`p-2 rounded-lg bg-slate-900 border border-slate-800 group-hover:scale-110 transition-transform shrink-0`}>
                     {insight.icon}
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-white mb-0.5">{insight.title}</p>
-                    <p className="text-xs text-slate-400 leading-relaxed">{insight.desc}</p>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-white mb-0.5 truncate">{insight.title}</p>
+                    <p className="text-[11px] text-slate-400 leading-relaxed line-clamp-2">{insight.desc}</p>
                   </div>
                 </div>
               </div>

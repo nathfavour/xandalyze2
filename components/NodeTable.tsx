@@ -76,7 +76,7 @@ export const NodeTable: React.FC<NodeTableProps> = ({ nodes, onAnalyzeNode }) =>
       </div>
 
       <div className="overflow-x-auto flex-1 custom-scrollbar">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full text-left border-collapse min-w-[800px]">
           <thead className="bg-slate-950/50 text-slate-500 text-[10px] uppercase font-bold tracking-widest sticky top-0 z-10 backdrop-blur-md border-b border-slate-800">
             <tr>
               <th className="px-6 py-4 cursor-pointer hover:text-indigo-400 transition-colors" onClick={() => handleSort('identityPubkey')}>

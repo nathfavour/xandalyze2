@@ -216,7 +216,7 @@ export default function Home() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col overflow-hidden relative">
+      <main className="flex-1 min-w-0 flex flex-col overflow-hidden relative">
         {/* Header */}
         <header className="h-16 bg-slate-900/50 backdrop-blur-md border-b border-slate-800 flex items-center justify-between px-4 lg:px-8 z-10">
           <div className="flex items-center">
@@ -262,12 +262,12 @@ export default function Home() {
         </header>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-8 scroll-smooth custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth custom-scrollbar">
           
           {activeTab === 'dashboard' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[1600px] mx-auto w-full">
               {/* Top Stats Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6 mb-8">
                 <StatCard 
                   title="Total pNodes" 
                   value={stats.totalNodes} 
@@ -303,17 +303,17 @@ export default function Home() {
               </div>
 
               {/* Charts Row */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div className="lg:col-span-2">
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+                <div className="xl:col-span-2 min-h-[400px]">
                   <LatencyChart nodes={nodes} />
                 </div>
-                <div>
+                <div className="min-h-[400px]">
                   <StatusPieChart nodes={nodes} />
                 </div>
               </div>
 
               {/* Node Table */}
-              <div className="h-[600px] mb-8">
+              <div className="min-h-[500px] mb-8 overflow-hidden">
                 <NodeTable 
                   nodes={nodes} 
                   onAnalyzeNode={(node) => {
