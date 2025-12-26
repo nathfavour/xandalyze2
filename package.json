@@ -11,10 +11,13 @@
     "docs:build": "cd docs && pnpm build"
   },
   "dependencies": {
+    "@types/d3-geo": "^3.1.0",
+    "d3-geo": "^3.1.1",
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-simple-maps": "^3.0.0",
     "recharts": "^3.6.0"
   },
   "devDependencies": {

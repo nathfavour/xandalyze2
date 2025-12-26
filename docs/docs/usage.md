@@ -19,6 +19,7 @@ The **Dashboard** is your mission control. It provides a high-level summary of t
 
 ### Visualizations
 - **Network Latency (24h)**: Tracks the stability of the network over time. Spikes here may indicate regional network congestion.
+- **Global Network Topology**: A real-time geographical map showing where pNodes are physically located. Glowing markers indicate active clusters, with size representing node density in that region.
 - **Status Distribution**: A breakdown of node health (Active, Delinquent, Offline).
 
 ---

@@ -14,7 +14,7 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         Direct integration with Xandeum pRPC for live gossip network visibility, 
-        tracking latency, uptime, and node status in real-time.
+        including a vivid global topology map tracking node density and status.
       </>
     ),
   },

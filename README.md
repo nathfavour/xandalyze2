@@ -19,6 +19,7 @@ Built for the **Superteam Xandeum Bounty**, Xandalyze focuses on **Clarity**, **
 
 ### 📊 Real-Time pNode Monitoring
 - **Live Gossip Integration**: Directly connects to Xandeum pRPC (`getClusterNodes`) to track active storage providers.
+- **Global Network Topology**: A vivid, real-time geographical map visualizing pNode distribution, density, and cluster health across the globe.
 - **Advanced Registry**: Searchable and sortable table featuring Pubkeys, Versions, Latency, and Uptime.
 - **Health Indicators**: Color-coded status vectors (Active, Delinquent, Offline) for instant network assessment.
 

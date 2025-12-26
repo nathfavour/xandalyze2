@@ -22,6 +22,7 @@ import { NodeTable } from '../components/NodeTable';
 import { StatusPieChart, LatencyChart } from '../components/DashboardCharts';
 import { NAV_ITEMS } from '../constants';
 import { AICommandSidebar } from '../components/ai/AICommandSidebar';
+import { GeographicalMap } from '../components/GeographicalMap';
 import { ChevronLeft, ChevronRight, GripVertical, X } from 'lucide-react';
 import Image from 'next/image';
 
@@ -301,6 +302,11 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Global Topology Row */}
+              <div className="mb-8 h-[500px]">
+                <GeographicalMap nodes={nodes} />
+              </div>
+
               {/* Node Table */}
               <div className="min-h-[500px] mb-8 overflow-hidden">
                 <NodeTable 
@@ -333,21 +339,13 @@ export default function Home() {
           )}
 
           {activeTab === 'map' && (
-            <div className="h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-700 bg-slate-900/20 rounded-3xl border border-slate-800 border-dashed p-12 text-center">
-              <div className="w-24 h-24 bg-indigo-500/10 rounded-full flex items-center justify-center mb-6 border border-indigo-500/20">
-                <MapIcon size={48} className="text-indigo-400" />
+            <div className="h-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="mb-6">
+                <h3 className="text-2xl font-black text-white">Network Topology</h3>
+                <p className="text-slate-500">Real-time geographical distribution of Xandeum pNodes across the globe.</p>
               </div>
-              <h3 className="text-3xl font-black text-white mb-2">Global Network Topology</h3>
-              <p className="text-slate-400 max-w-md mx-auto mb-8">
-                We are currently mapping the physical locations of pNodes using gossip metadata. This feature will be available in the next update.
-              </p>
-              <div className="flex gap-4">
-                <div className="px-6 py-2 bg-slate-800 rounded-full text-xs font-bold text-slate-400 uppercase tracking-widest border border-slate-700">
-                  Coming Soon
-                </div>
-                <div className="px-6 py-2 bg-indigo-500/10 rounded-full text-xs font-bold text-indigo-400 uppercase tracking-widest border border-indigo-500/20">
-                  v1.2.0
-                </div>
+              <div className="h-[calc(100vh-250px)] min-h-[600px]">
+                <GeographicalMap nodes={nodes} />
               </div>
             </div>
           )}
