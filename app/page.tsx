@@ -153,7 +153,10 @@ export default function Home() {
         ${isSidebarCollapsed ? 'w-20' : 'w-64'}
       `}>
         <div className={`h-16 flex items-center px-6 border-b border-white/5 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
-          <div className="flex items-center">
+          <button 
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="flex items-center hover:opacity-80 transition-opacity"
+          >
             <div className="w-8 h-8 relative shrink-0">
                <Image src="/xandeum-logo.png" alt="Xandeum" fill className="object-contain" />
             </div>
@@ -162,13 +165,15 @@ export default function Home() {
                 Xandalyze
               </span>
             )}
-          </div>
-          <button 
-            className="lg:hidden text-slate-400 hover:text-white"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <X size={20} />
           </button>
+          {!isSidebarCollapsed && (
+            <button 
+              className="lg:hidden text-slate-400 hover:text-white"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <X size={20} />
+            </button>
+          )}
         </div>
 
         <nav className="flex-1 py-6 px-3 space-y-2">
