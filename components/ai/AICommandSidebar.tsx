@@ -130,11 +130,11 @@ export const AICommandSidebar = ({
   return (
     <aside 
       style={{ width: `${width}px` }}
-      className="h-full bg-slate-900 border-l border-slate-800 flex flex-col shadow-2xl z-20 animate-in slide-in-from-right duration-300"
+      className="h-full bg-[#0A0A0B] border-l border-white/5 flex flex-col shadow-2xl z-20 animate-in slide-in-from-right duration-300"
     >
-      <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50 backdrop-blur-sm sticky top-0 z-10">
+      <div className="p-6 border-b border-white/5 flex justify-between items-center bg-[#0A0A0B]/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-500 rounded-lg shadow-lg shadow-indigo-500/20">
+          <div className="p-2 bg-xandeum-blue rounded-lg shadow-lg shadow-xandeum-blue/20">
             <Bot size={20} className="text-white" />
           </div>
           <div>
@@ -145,7 +145,7 @@ export const AICommandSidebar = ({
         <div className="flex items-center gap-2">
           <button 
             onClick={onClose} 
-            className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg text-xs font-bold transition-all border border-slate-700"
+            className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg text-xs font-bold transition-all border border-white/10"
           >
             <X size={14} />
             Cancel
@@ -162,9 +162,9 @@ export const AICommandSidebar = ({
           </div>
           <div className="grid grid-cols-1 gap-3">
             {insights.map((insight, idx) => (
-              <div key={idx} className="p-3 sm:p-4 bg-slate-800/40 border border-slate-800 rounded-2xl hover:border-slate-700 transition-colors group">
+              <div key={idx} className="p-3 sm:p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-white/10 transition-colors group">
                 <div className="flex items-start gap-3">
-                  <div className={`p-2 rounded-lg bg-slate-900 border border-slate-800 group-hover:scale-110 transition-transform shrink-0`}>
+                  <div className={`p-2 rounded-lg bg-[#050505] border border-white/5 group-hover:scale-110 transition-transform shrink-0`}>
                     {insight.icon}
                   </div>
                   <div className="min-w-0">
@@ -186,7 +186,7 @@ export const AICommandSidebar = ({
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Ask anything about the network..."
-              className="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[120px] resize-none text-sm shadow-inner"
+              className="w-full bg-[#050505] border border-white/5 rounded-2xl p-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-xandeum-blue/50 min-h-[120px] resize-none text-sm shadow-inner"
             />
             <div className="absolute bottom-3 right-3 flex items-center gap-2">
               {prompt && (
@@ -200,7 +200,7 @@ export const AICommandSidebar = ({
               <button
                 onClick={handleAnalyze}
                 disabled={isLoading || !prompt.trim()}
-                className="p-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:hover:bg-indigo-600 text-white rounded-xl transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
+                className="p-3 bg-xandeum-blue hover:bg-xandeum-blue/80 disabled:opacity-50 disabled:hover:bg-xandeum-blue text-white rounded-xl transition-all shadow-lg shadow-xandeum-blue/20 active:scale-95"
               >
                 {isLoading ? <Loader2 className="animate-spin" size={18} /> : <Sparkles size={18} />}
               </button>

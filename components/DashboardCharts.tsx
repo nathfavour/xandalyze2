@@ -73,11 +73,11 @@ export const LatencyChart: React.FC<ChartProps> = ({ nodes }) => {
   }));
 
   return (
-    <div className="h-[350px] w-full bg-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-800 p-6 shadow-xl">
+    <div className="h-[350px] w-full bg-[#0A0A0B]/40 backdrop-blur-xl rounded-2xl border border-white/5 p-6 shadow-xl">
        <div className="flex justify-between items-center mb-6">
          <h3 className="text-slate-200 font-bold text-xs uppercase tracking-[0.2em]">Average Network Latency (24h)</h3>
          <div className="flex items-center gap-2">
-           <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></div>
+           <div className="w-2 h-2 rounded-full bg-xandeum-blue animate-pulse"></div>
            <span className="text-[10px] text-slate-500 font-bold uppercase">Live Feed</span>
          </div>
        </div>
@@ -85,8 +85,8 @@ export const LatencyChart: React.FC<ChartProps> = ({ nodes }) => {
         <AreaChart data={data}>
           <defs>
             <linearGradient id="colorLatency" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
-              <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+              <stop offset="5%" stopColor="#0052FF" stopOpacity={0.3}/>
+              <stop offset="95%" stopColor="#0052FF" stopOpacity={0}/>
             </linearGradient>
           </defs>
           <XAxis 
@@ -106,13 +106,13 @@ export const LatencyChart: React.FC<ChartProps> = ({ nodes }) => {
             tick={{ fontWeight: 'bold' }}
           />
           <Tooltip 
-             contentStyle={{ backgroundColor: '#0f172a', borderRadius: '12px', border: '1px solid #1e293b', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-             itemStyle={{ color: '#818cf8', fontSize: '12px', fontWeight: 'bold' }}
+             contentStyle={{ backgroundColor: '#050505', borderRadius: '12px', border: '1px solid #1e293b', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+             itemStyle={{ color: '#0052FF', fontSize: '12px', fontWeight: 'bold' }}
           />
           <Area 
             type="monotone" 
             dataKey="latency" 
-            stroke="#6366f1" 
+            stroke="#0052FF" 
             strokeWidth={3} 
             fillOpacity={1} 
             fill="url(#colorLatency)" 

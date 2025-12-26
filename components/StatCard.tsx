@@ -12,22 +12,22 @@ interface StatCardProps {
 
 export const StatCard: React.FC<StatCardProps> = ({ title, value, subValue, trend, icon, color = "blue" }) => {
   const colorClasses = {
-    blue: "bg-blue-500/10 text-blue-400 border-blue-500/20 icon-bg-blue-500/20",
-    green: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 icon-bg-emerald-500/20",
-    purple: "bg-purple-500/10 text-purple-400 border-purple-500/20 icon-bg-purple-500/20",
-    orange: "bg-orange-500/10 text-orange-400 border-orange-500/20 icon-bg-orange-500/20",
+    blue: "bg-xandeum-blue/5 text-xandeum-blue border-xandeum-blue/10 icon-bg-xandeum-blue/20",
+    green: "bg-emerald-500/5 text-emerald-400 border-emerald-500/10 icon-bg-emerald-500/20",
+    purple: "bg-xandeum-purple/5 text-xandeum-purple border-xandeum-purple/10 icon-bg-xandeum-purple/20",
+    orange: "bg-orange-500/5 text-orange-400 border-orange-500/10 icon-bg-orange-500/20",
   };
 
   const activeColor = colorClasses[color as keyof typeof colorClasses] || colorClasses.blue;
   const [bg, text, border, iconBg] = activeColor.split(' ');
 
   return (
-    <div className={`p-6 rounded-2xl border ${bg} ${border} backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-indigo-500/10 group relative overflow-hidden`}>
+    <div className={`p-6 rounded-2xl border ${bg} ${border} backdrop-blur-md transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-xandeum-blue/5 group relative overflow-hidden`}>
       <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors" />
       
       <div className="flex justify-between items-start relative z-10">
         <div>
-          <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">{title}</p>
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">{title}</p>
           <h3 className="text-3xl font-black text-white tracking-tighter">{value}</h3>
         </div>
         <div className={`p-3 rounded-xl ${iconBg.replace('icon-bg-', '')} ${text} shadow-inner`}>
