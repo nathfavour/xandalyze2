@@ -231,14 +231,14 @@ export default function Home() {
             </button>
             <button 
               onClick={() => setIsCommandSidebarOpen(!isCommandSidebarOpen)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-sm font-bold ${
+              title="Xandalyze AI"
+              className={`flex items-center justify-center p-2 rounded-lg transition-all ${
                 isCommandSidebarOpen 
                   ? 'bg-xandeum-blue text-white shadow-lg shadow-xandeum-blue/20' 
                   : 'bg-xandeum-blue/10 border border-xandeum-blue/20 text-xandeum-blue hover:bg-xandeum-blue/20'
               }`}
             >
-              <Bot size={18} />
-              <span className="hidden md:inline">Xandalyze AI</span>
+              <Sparkles size={18} />
             </button>
             <button 
               onClick={loadData}
