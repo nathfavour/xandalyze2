@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { PNode, NetworkStats, GeminiReport } from '../types';
 import { fetchPNodes } from '../services/pNodeService';
-import { generateNetworkReport } from '../services/geminiService';
+import { generateNetworkReport } from '../services/aiService';
 import { StatCard } from '../components/StatCard';
 import { NodeTable } from '../components/NodeTable';
 import { StatusPieChart, LatencyChart } from '../components/DashboardCharts';

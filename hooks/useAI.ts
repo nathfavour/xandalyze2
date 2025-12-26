@@ -8,9 +8,9 @@ export const useAI = () => {
   const generate = async (prompt: string, contextHistory: any[] = []) => {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     
-    // Inject user-specific key if available in settings
-    if (userSettings?.customGeminiKey) {
-      headers["x-user-gemini-key"] = userSettings.customGeminiKey;
+    // Inject user-specific token if available in settings
+    if (userSettings?.customGithubToken) {
+      headers["x-user-github-token"] = userSettings.customGithubToken;
     }
 
     const response = await fetch("/api/ai/generate", {

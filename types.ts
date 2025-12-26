@@ -30,7 +30,7 @@ export interface SortConfig {
   direction: 'asc' | 'desc';
 }
 
-export interface GeminiReport {
+export interface AIReport {
   summary: string;
   healthScore: number;
   recommendations: string[];

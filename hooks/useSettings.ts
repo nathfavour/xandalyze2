@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 interface UserSettings {
-  customGeminiKey?: string;
+  customGithubToken?: string;
   theme?: 'dark' | 'light';
 }
 

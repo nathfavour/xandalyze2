@@ -32,10 +32,11 @@ export const generateNetworkReport = async (nodes: PNode[]): Promise<GeminiRepor
     }
 
     const data = await response.json();
+    // Clean up potential markdown formatting from AI response
     const jsonText = data.text.replace(/```json/g, '').replace(/```/g, '').trim();
     return JSON.parse(jsonText) as GeminiReport;
   } catch (error) {
-    console.error("Gemini API Error:", error);
+    console.error("AI Service Error:", error);
     throw error;
   }
 };
