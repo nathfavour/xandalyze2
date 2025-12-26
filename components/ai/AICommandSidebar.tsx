@@ -158,7 +158,6 @@ export const AICommandSidebar = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Dynamic Insights</h4>
-            <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-500 text-[8px] font-bold rounded-full border border-emerald-500/20 shrink-0">OFFLINE MODE</span>
           </div>
           <div className="grid grid-cols-1 gap-3">
             {insights.map((insight, idx) => (
